@@ -1,0 +1,139 @@
+/*
+ * Global styles and design tokens.
+ *
+ * Mobile-first: every size below is chosen for a ~390x844 portrait phone and scales
+ * from there. Nothing assumes a mouse or a wide viewport.
+ */
+
+:root {
+  /* Surfaces */
+  --c-bg: #10141c;
+  --c-bg-raised: #1a2130;
+  --c-bg-panel: rgba(28, 36, 51, 0.92);
+  --c-border: rgba(255, 255, 255, 0.12);
+
+  /* Text */
+  --c-text: #f2f5fa;
+  --c-text-dim: #a8b3c6;
+  --c-text-faint: #6f7c92;
+
+  /* Accents */
+  --c-accent: #f2a03d;
+  --c-accent-deep: #d9761f;
+  --c-good: #64d38a;
+  --c-bad: #f2685e;
+  --c-info: #6ea8ff;
+
+  /* Rank colours */
+  --c-rank-s: #ffd45e;
+  --c-rank-a: #7be0a4;
+  --c-rank-b: #6ea8ff;
+  --c-rank-c: #a8b3c6;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --font:
+    'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', system-ui, -apple-system, sans-serif;
+  --font-num: 'SF Mono', 'Roboto Mono', ui-monospace, monospace;
+
+  /* Safe-area shorthands used by every full-screen layout */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  /* The smallest comfortable touch target. Never make a control smaller. */
+  --touch-min: 48px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font);
+  /* Stops pull-to-refresh and rubber-band scroll from fighting the game. */
+  overscroll-behavior: none;
+}
+
+body {
+  /* The app is a fixed viewport; individual panes opt into scrolling instead. */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* dvh keeps the layout correct while mobile browser chrome collapses. */
+  height: 100dvh;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Text that is part of the game UI should not be selectable by a stray long press. */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Panes that are allowed to scroll (leaderboard, long rule lists). */
+.scroll-area {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Screen transition used by every route. */
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

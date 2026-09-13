@@ -1,0 +1,52 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: calc(var(--safe-top) + 24px) 24px calc(var(--safe-bottom) + 24px);
+  background: rgba(8, 11, 17, 0.9);
+  text-align: center;
+  animation: screen-in 180ms ease-out both;
+}
+
+.icon {
+  font-size: 52px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.text {
+  margin: 0;
+  max-width: 320px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-text-dim);
+}
+
+.rotateHint {
+  width: 78px;
+  height: 118px;
+  border: 4px solid var(--c-accent);
+  border-radius: 14px;
+  animation: rotate-hint 2.2s ease-in-out infinite;
+}
+
+@keyframes rotate-hint {
+  0%,
+  40% {
+    transform: rotate(90deg);
+  }
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+}

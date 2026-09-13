@@ -1,0 +1,100 @@
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0 12px;
+}
+
+.tab {
+  min-height: var(--touch-min);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-bg-raised);
+  color: var(--c-text-dim);
+  font-size: 15px;
+  font-weight: 700;
+  touch-action: manipulation;
+}
+
+.tabActive {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: #241503;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row,
+.rowMe {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rowMe {
+  background: rgba(242, 160, 61, 0.18);
+  border: 1px solid var(--c-accent);
+}
+
+.rank {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--c-text-faint);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rowMe .rank {
+  color: var(--c-accent);
+}
+
+.name {
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score {
+  font-size: 16px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.message {
+  margin: 24px 0 8px;
+  text-align: center;
+  color: var(--c-text-dim);
+  font-size: 15px;
+}
+
+.detail {
+  margin: 0 0 14px;
+  text-align: center;
+  color: var(--c-text-faint);
+  font-size: 12px;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divider {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--c-text-faint);
+}

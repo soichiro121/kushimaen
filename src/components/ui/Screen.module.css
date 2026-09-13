@@ -1,0 +1,47 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--safe-top) + 16px) calc(var(--safe-right) + 18px)
+    calc(var(--safe-bottom) + 16px) calc(var(--safe-left) + 18px);
+  animation: screen-in 260ms ease-out both;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.centered {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Scrollable body between a fixed header and a fixed footer. */
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--c-text-dim);
+  line-height: 1.6;
+}

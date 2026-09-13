@@ -1,0 +1,19 @@
+.panel {
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+
+.tight {
+  padding: 12px 14px;
+}
+
+.heading {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--c-text-faint);
+  text-transform: uppercase;
+}

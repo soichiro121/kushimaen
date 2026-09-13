@@ -1,0 +1,98 @@
+{
+  "configVersion": 3,
+  "title": "KOMATO RUSH",
+  "subtitle": "駒場東邦ミニゲーム",
+  "stageOrder": ["late", "bread", "teacher"],
+  "run": {
+    "ttlSeconds": 1800,
+    "minTotalDurationMs": 20000,
+    "maxTotalDurationMs": 1200000
+  },
+  "nickname": {
+    "minLength": 1,
+    "maxLength": 12
+  },
+  "stages": {
+    "late": {
+      "timeLimitSec": 35,
+      "scoring": {
+        "nearMissScore": 130,
+        "comboUnitScore": 20,
+        "maxComboUnitsPerHit": 4,
+        "collisionPenalty": 280,
+        "goalBonus": 1000,
+        "timeBonusPerSecond": 80
+      },
+      "limits": {
+        "minDurationMs": 8000,
+        "maxDurationMs": 90000,
+        "maxNearMissCount": 240,
+        "maxCollisionCount": 80,
+        "maxTimeRemainingSec": 35
+      },
+      "rank": {
+        "S": 8800,
+        "A": 6800,
+        "B": 3600,
+        "C": 0
+      }
+    },
+    "bread": {
+      "minQuestions": 6,
+      "maxQuestions": 10,
+      "speedWindowMs": 2500,
+      "speedStepMs": 250,
+      "maxSpeedUnitsPerQuestion": 10,
+      "scoring": {
+        "correctScore": 220,
+        "speedUnitScore": 85,
+        "comboUnitScore": 60,
+        "maxComboUnitsPerHit": 5,
+        "mistakePenalty": 280
+      },
+      "limits": {
+        "minDurationMs": 3000,
+        "maxDurationMs": 240000,
+        "maxMistakeCount": 120
+      },
+      "rank": {
+        "S": 7600,
+        "A": 6000,
+        "B": 3800,
+        "C": 0
+      },
+      "referenceQuestions": 8
+    },
+    "teacher": {
+      "timeLimitSec": 90,
+      "scoring": {
+        "clearBonus": 2300,
+        "checkpointScore": 360,
+        "timeBonusFreeSec": 30,
+        "timeBonusPerSecond": 320,
+        "noCaughtBonus": 1150,
+        "perfectStealthBonus": 1450,
+        "dangerBonus": 245,
+        "maxDangerPassCount": 10,
+        "caughtPenalty": 2175
+      },
+      "limits": {
+        "minDurationMs": 12000,
+        "maxDurationMs": 140000,
+        "maxCheckpointCount": 6,
+        "minCheckpointCount": 2,
+        "maxCaughtCount": 20,
+        "maxDetectionCount": 80,
+        "maxTimeRemainingSec": 90,
+        "maxPlayerSpeedPxPerSec": 420,
+        "maxRouteDistancePx": 60000
+      },
+      "rank": {
+        "S": 7900,
+        "A": 7000,
+        "B": 6000,
+        "C": 0
+      }
+    }
+  }
+}

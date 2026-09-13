@@ -1,0 +1,326 @@
+{
+  "configVersion": 3,
+  "_comment": "Golden vectors asserted by BOTH tests/scoring.test.ts and backend/tests/ScoreCalculatorTest.php. Expected values are computed by hand from v3.json, NOT captured from an implementation - that is what makes them a specification rather than a snapshot. Editing a formula on one side alone turns the other side red.",
+  "stageScores": [
+    {
+      "name": "late: typical run reaching the gate",
+      "_working": "20*130 + 45*20 + (1000 + 7*80) - 2*280 = 2600 + 900 + 1560 - 560",
+      "stageId": "late",
+      "metrics": {
+        "nearMissCount": 20,
+        "comboUnits": 45,
+        "collisionCount": 2,
+        "maxCombo": 7,
+        "goalReached": 1,
+        "timeRemainingSec": 7
+      },
+      "expected": 4500
+    },
+    {
+      "name": "late: penalties clamp at zero",
+      "_working": "0 - 5*280 = -1400, clamped to 0",
+      "stageId": "late",
+      "metrics": {
+        "nearMissCount": 0,
+        "comboUnits": 0,
+        "collisionCount": 5,
+        "maxCombo": 0,
+        "goalReached": 0,
+        "timeRemainingSec": 0
+      },
+      "expected": 0
+    },
+    {
+      "name": "late: timed out short of the gate, so no goal bonus and no time bonus",
+      "_working": "11*130 + 6*20 - 1*280 = 1430 + 120 - 280",
+      "stageId": "late",
+      "metrics": {
+        "nearMissCount": 11,
+        "comboUnits": 6,
+        "collisionCount": 1,
+        "maxCombo": 3,
+        "goalReached": 0,
+        "timeRemainingSec": 0
+      },
+      "expected": 1270
+    },
+    {
+      "name": "bread: strong run, normalised from 10 orders to the 8-order reference",
+      "_working": "(8*220 + 52*85 + 21*60 - 2*280) * 8/10 = (1760 + 4420 + 1260 - 560) * 0.8 = 6880 * 0.8",
+      "stageId": "bread",
+      "metrics": {
+        "questionCount": 10,
+        "correctCount": 8,
+        "mistakeCount": 2,
+        "speedUnits": 52,
+        "comboUnits": 21,
+        "maxCombo": 6,
+        "totalReactionMs": 9200
+      },
+      "expected": 5504
+    },
+    {
+      "name": "bread: identical play over 6 orders scores the same as over 10",
+      "_working": "(6*220 + 39*85 + 15.75->16*60 ... ) see the pair below; this vector pins the normalisation itself",
+      "stageId": "bread",
+      "metrics": {
+        "questionCount": 6,
+        "correctCount": 6,
+        "mistakeCount": 0,
+        "speedUnits": 42,
+        "comboUnits": 24,
+        "maxCombo": 6,
+        "totalReactionMs": 5400
+      },
+      "expected": 8440
+    },
+    {
+      "name": "bread: the same per-order performance over 10 orders gives the same score",
+      "_working": "(10*220 + 70*85 + 40*60) * 8/10 = (2200 + 5950 + 2400) * 0.8 = 10550 * 0.8 = 8440",
+      "stageId": "bread",
+      "metrics": {
+        "questionCount": 10,
+        "correctCount": 10,
+        "mistakeCount": 0,
+        "speedUnits": 70,
+        "comboUnits": 40,
+        "maxCombo": 10,
+        "totalReactionMs": 9000
+      },
+      "expected": 8440
+    },
+    {
+      "name": "bread: all wrong clamps at zero",
+      "_working": "(0 - 6*280) * 8/6 = -2240, clamped to 0",
+      "stageId": "bread",
+      "metrics": {
+        "questionCount": 6,
+        "correctCount": 0,
+        "mistakeCount": 6,
+        "speedUnits": 0,
+        "comboUnits": 0,
+        "maxCombo": 0,
+        "totalReactionMs": 0
+      },
+      "expected": 0
+    },
+    {
+      "name": "teacher: clean fast escape - every bonus earned",
+      "_working": "3*360 + 4*245 + 2300 + (57-30)*320 + 1150 + 1450 = 1080 + 980 + 2300 + 8640 + 1150 + 1450",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 1,
+        "checkpointsCompleted": 3,
+        "timeRemainingSec": 57,
+        "caughtCount": 0,
+        "detectionCount": 0,
+        "dangerPassCount": 4,
+        "perfectStealth": 1,
+        "routeDistance": 8700,
+        "idleTimeMs": 2400
+      },
+      "expected": 15600
+    },
+    {
+      "name": "teacher: the same run, spotted once - the perfect-stealth bonus is gone",
+      "_working": "as above minus the 1450 perfect-stealth bonus (detectionCount > 0)",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 1,
+        "checkpointsCompleted": 3,
+        "timeRemainingSec": 57,
+        "caughtCount": 0,
+        "detectionCount": 1,
+        "dangerPassCount": 4,
+        "perfectStealth": 0,
+        "routeDistance": 8700,
+        "idleTimeMs": 2400
+      },
+      "expected": 14150
+    },
+    {
+      "name": "teacher: caught twice - the penalty and both clean-run bonuses are lost",
+      "_working": "3*360 + 2*245 + 2300 + (44-30)*320 - 2*2175 = 1080 + 490 + 2300 + 4480 - 4350",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 1,
+        "checkpointsCompleted": 3,
+        "timeRemainingSec": 44,
+        "caughtCount": 2,
+        "detectionCount": 3,
+        "dangerPassCount": 2,
+        "perfectStealth": 0,
+        "routeDistance": 11200,
+        "idleTimeMs": 6100
+      },
+      "expected": 4000
+    },
+    {
+      "name": "teacher: a slow clear inside the free allowance earns no time bonus at all",
+      "_working": "3*360 + 1*245 + 2300 + max(0, 28-30)*320 - 1*2175 = 1080 + 245 + 2300 + 0 - 2175",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 1,
+        "checkpointsCompleted": 3,
+        "timeRemainingSec": 28,
+        "caughtCount": 1,
+        "detectionCount": 2,
+        "dangerPassCount": 1,
+        "perfectStealth": 0,
+        "routeDistance": 9900,
+        "idleTimeMs": 18000
+      },
+      "expected": 1450
+    },
+    {
+      "name": "teacher: ran out of time - objectives still count, nothing else does",
+      "_working": "2*360 + 3*245 = 720 + 735; no clear means no clear bonus and no time bonus",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 0,
+        "checkpointsCompleted": 2,
+        "timeRemainingSec": 0,
+        "caughtCount": 0,
+        "detectionCount": 2,
+        "dangerPassCount": 3,
+        "perfectStealth": 0,
+        "routeDistance": 12400,
+        "idleTimeMs": 21000
+      },
+      "expected": 1455
+    },
+    {
+      "name": "teacher: a forged perfectStealth flag buys nothing - the bonus is derived",
+      "_working": "3*360 + 2300 + (40-30)*320 - 1*2175 = 1080 + 2300 + 3200 - 2175; the flag is ignored",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 1,
+        "checkpointsCompleted": 3,
+        "timeRemainingSec": 40,
+        "caughtCount": 1,
+        "detectionCount": 2,
+        "dangerPassCount": 0,
+        "perfectStealth": 1,
+        "routeDistance": 9100,
+        "idleTimeMs": 5000
+      },
+      "expected": 4405
+    },
+    {
+      "name": "teacher: danger passes are capped, so circling a teacher cannot farm points",
+      "_working": "min(999, 10) * 245 = 2450",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 0,
+        "checkpointsCompleted": 0,
+        "timeRemainingSec": 0,
+        "caughtCount": 0,
+        "detectionCount": 0,
+        "dangerPassCount": 999,
+        "perfectStealth": 0,
+        "routeDistance": 4000,
+        "idleTimeMs": 0
+      },
+      "expected": 2450
+    },
+    {
+      "name": "teacher: caught repeatedly clamps at zero",
+      "_working": "1*360 - 5*2175 = -10515, clamped to 0",
+      "stageId": "teacher",
+      "metrics": {
+        "cleared": 0,
+        "checkpointsCompleted": 1,
+        "timeRemainingSec": 0,
+        "caughtCount": 5,
+        "detectionCount": 5,
+        "dangerPassCount": 0,
+        "perfectStealth": 0,
+        "routeDistance": 6000,
+        "idleTimeMs": 9000
+      },
+      "expected": 0
+    },
+    {
+      "name": "unknown metric keys are ignored, missing keys default to zero",
+      "_working": "2*360 = 720",
+      "stageId": "teacher",
+      "metrics": {
+        "checkpointsCompleted": 2,
+        "somethingElse": 99999
+      },
+      "expected": 720
+    }
+  ],
+  "comboUnits": [
+    {
+      "comboLevel": 0,
+      "maxUnitsPerHit": 9,
+      "expected": 0
+    },
+    {
+      "comboLevel": 1,
+      "maxUnitsPerHit": 9,
+      "expected": 0
+    },
+    {
+      "comboLevel": 2,
+      "maxUnitsPerHit": 9,
+      "expected": 1
+    },
+    {
+      "comboLevel": 10,
+      "maxUnitsPerHit": 9,
+      "expected": 9
+    },
+    {
+      "comboLevel": 40,
+      "maxUnitsPerHit": 9,
+      "expected": 9
+    },
+    {
+      "comboLevel": 6,
+      "maxUnitsPerHit": 4,
+      "expected": 4
+    },
+    {
+      "comboLevel": 3,
+      "maxUnitsPerHit": 4,
+      "expected": 2
+    },
+    {
+      "comboLevel": 99,
+      "maxUnitsPerHit": 5,
+      "expected": 5
+    }
+  ],
+  "speedUnits": [
+    {
+      "reactionMs": 0,
+      "expected": 10
+    },
+    {
+      "reactionMs": 250,
+      "expected": 9
+    },
+    {
+      "reactionMs": 1000,
+      "expected": 6
+    },
+    {
+      "reactionMs": 2400,
+      "expected": 1
+    },
+    {
+      "reactionMs": 2499,
+      "expected": 1
+    },
+    {
+      "reactionMs": 2500,
+      "expected": 0
+    },
+    {
+      "reactionMs": 9999,
+      "expected": 0
+    }
+  ]
+}

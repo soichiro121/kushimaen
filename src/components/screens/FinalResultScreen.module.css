@@ -1,0 +1,108 @@
+.step {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: var(--c-accent);
+}
+
+.player {
+  margin: 6px 0 18px;
+  font-size: 26px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.stageList {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stageList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+}
+
+.stageName {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stageScore {
+  font-size: 19px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.totalBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(242, 160, 61, 0.18), rgba(110, 168, 255, 0.12));
+  border: 1px solid var(--c-border);
+}
+
+.totalLabel {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--c-text-faint);
+}
+
+.total {
+  margin: 0;
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.statusText,
+.statusOk,
+.statusBad,
+.note {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.statusText {
+  color: var(--c-text-dim);
+  margin-bottom: 0;
+}
+
+.statusOk {
+  color: var(--c-good);
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.statusBad {
+  color: var(--c-bad);
+  font-weight: 600;
+}
+
+.note {
+  color: var(--c-text-faint);
+  font-size: 12px;
+  margin-bottom: 0;
+}

@@ -1,0 +1,70 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(8, 11, 17, 0.66);
+  animation: screen-in 180ms ease-out both;
+}
+
+.sheet {
+  width: min(100%, 480px);
+  max-height: 88dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 22px 20px calc(var(--safe-bottom) + 22px);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--c-bg-raised);
+  border-top: 1px solid var(--c-border);
+}
+
+.sheet:focus {
+  outline: none;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: var(--c-text-dim);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  min-height: 54px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 2px solid var(--c-border);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: 18px;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+}
+
+.help {
+  margin: 6px 0 16px;
+  font-size: 12px;
+  color: var(--c-text-faint);
+}

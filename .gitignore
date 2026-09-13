@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+backend/vendor/
+
+# build output
+dist/
+coverage/
+*.tsbuildinfo
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/var/
+!.env.example
+
+# editor / os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# local database
+*.sqlite
+*.sqlite3

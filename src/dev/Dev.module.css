@@ -1,0 +1,219 @@
+.block {
+  margin-bottom: 18px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rowTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rowMeta {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--c-text-faint);
+  font-family: var(--font-num);
+}
+
+.info {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.info > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.info dt {
+  color: var(--c-text-faint);
+}
+
+.info dd {
+  margin: 0;
+  font-family: var(--font-num);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 24px;
+}
+
+.link {
+  color: var(--c-info);
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 10px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-raised);
+  color: var(--c-text-dim);
+  font-size: 13px;
+}
+
+.filterActive {
+  background: var(--c-accent);
+  color: #241503;
+  border-color: var(--c-accent);
+}
+
+.bundleHeading {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  padding: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-bg-panel);
+}
+
+.cardBroken {
+  border-color: var(--c-bad);
+  background: rgba(242, 104, 94, 0.12);
+}
+
+.preview {
+  display: grid;
+  place-items: center;
+  min-height: 110px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  /* Checkerboard: makes transparency (and its absence) immediately visible. */
+  background-color: #5c6270;
+  background-image:
+    linear-gradient(45deg, #464b57 25%, transparent 25%),
+    linear-gradient(-45deg, #464b57 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #464b57 75%),
+    linear-gradient(-45deg, transparent 75%, #464b57 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  overflow: hidden;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+}
+
+.frame {
+  display: block;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.cardId {
+  margin: 0;
+  font-family: var(--font-num);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-accent);
+  overflow-wrap: anywhere;
+}
+
+.cardUsage {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: var(--c-text-dim);
+}
+
+.cardMeta {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.cardMeta > div {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 6px;
+}
+
+.cardMeta dt {
+  color: var(--c-text-faint);
+}
+
+.cardMeta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: var(--font-num);
+}
+
+.todo {
+  color: var(--c-accent);
+  font-weight: 700;
+}
+
+.final {
+  color: var(--c-good);
+  font-weight: 700;
+}
+
+.brokenLabel {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-bad);
+}
+
+.empty {
+  margin: 24px 0;
+  text-align: center;
+  color: var(--c-text-dim);
+}

@@ -1,0 +1,38 @@
+.panel {
+  position: fixed;
+  top: calc(var(--safe-top) + 4px);
+  right: calc(var(--safe-right) + 4px);
+  z-index: 70;
+  max-width: 60vw;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.66);
+  color: #9be7b4;
+  font-family: var(--font-num);
+  font-size: 10px;
+  line-height: 1.5;
+  pointer-events: none;
+  white-space: pre;
+}
+
+.warn {
+  color: #ffb4a8;
+}
+
+.actions {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 4px);
+  right: calc(var(--safe-right) + 4px);
+  z-index: 70;
+  display: flex;
+  gap: 6px;
+}
+
+.button {
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 11px;
+}

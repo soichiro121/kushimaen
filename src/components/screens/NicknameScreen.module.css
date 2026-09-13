@@ -1,0 +1,50 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 22px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--c-text-dim);
+}
+
+.input {
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 2px solid var(--c-border);
+  background: var(--c-bg-raised);
+  color: var(--c-text);
+  /* 16px minimum: anything smaller makes iOS Safari zoom the page on focus. */
+  font-size: 18px;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+}
+
+.help {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-faint);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-bad);
+  font-weight: 600;
+}
+
+.hiddenSubmit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

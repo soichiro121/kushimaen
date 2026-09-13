@@ -1,0 +1,92 @@
+{
+  "configVersion": 2,
+  "title": "KOMATO RUSH",
+  "subtitle": "駒場東邦ミニゲーム",
+  "stageOrder": ["late", "bread", "teacher"],
+  "run": {
+    "ttlSeconds": 1800,
+    "minTotalDurationMs": 20000,
+    "maxTotalDurationMs": 1200000
+  },
+  "nickname": {
+    "minLength": 1,
+    "maxLength": 12
+  },
+  "stages": {
+    "late": {
+      "timeLimitSec": 35,
+      "scoring": {
+        "nearMissScore": 130,
+        "comboUnitScore": 20,
+        "maxComboUnitsPerHit": 4,
+        "collisionPenalty": 280,
+        "goalBonus": 1000,
+        "timeBonusPerSecond": 80
+      },
+      "limits": {
+        "minDurationMs": 8000,
+        "maxDurationMs": 90000,
+        "maxNearMissCount": 240,
+        "maxCollisionCount": 80,
+        "maxTimeRemainingSec": 35
+      },
+      "rank": {
+        "S": 8800,
+        "A": 6800,
+        "B": 3600,
+        "C": 0
+      }
+    },
+    "bread": {
+      "minQuestions": 6,
+      "maxQuestions": 10,
+      "speedWindowMs": 2500,
+      "speedStepMs": 250,
+      "maxSpeedUnitsPerQuestion": 10,
+      "scoring": {
+        "correctScore": 220,
+        "speedUnitScore": 85,
+        "comboUnitScore": 60,
+        "maxComboUnitsPerHit": 5,
+        "mistakePenalty": 280
+      },
+      "limits": {
+        "minDurationMs": 3000,
+        "maxDurationMs": 240000,
+        "maxMistakeCount": 120
+      },
+      "rank": {
+        "S": 7600,
+        "A": 6000,
+        "B": 3800,
+        "C": 0
+      },
+      "referenceQuestions": 8
+    },
+    "teacher": {
+      "timeLimitSec": 60,
+      "minTapIntervalMs": 200,
+      "scoring": {
+        "tapScore": 10,
+        "riskUnitScore": 70,
+        "maxRiskUnitsPerTap": 2,
+        "comboUnitScore": 90,
+        "maxComboUnitsPerHit": 5,
+        "hideBonus": 100,
+        "caughtPenalty": 600
+      },
+      "limits": {
+        "minDurationMs": 10000,
+        "maxDurationMs": 150000,
+        "maxCaughtCount": 30,
+        "maxHideCount": 120
+      },
+      "rank": {
+        "S": 8800,
+        "A": 7600,
+        "B": 5600,
+        "C": 0
+      }
+    }
+  }
+}
