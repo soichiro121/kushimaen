@@ -7,19 +7,25 @@ Browser (スマートフォン)
    │
    │  静的ファイル（React + Phaser のバンドル）
    ▼
-Apache ──┬── /        →  frontend/dist/     Vite の本番ビルド
+Vercel ──┬── /        →  dist/              Vite の本番ビルド
          │
-         └── /api/*   →  backend/public/index.php
+         └── /api/*   →  api/*.ts           サーバーレス関数（TypeScript）
                              │
+                             │  server/     ルーティング・検証・リポジトリ
+                             │  shared/     スコア式（ゲームと共有）
                              ▼
-                        PHP 8.3 / Slim 4
-                             │  PDO（プリペアドステートメントのみ）
-                             ▼
-                        MySQL / MariaDB / PostgreSQL
+                        Neon Postgres
+                             （全クエリがパラメータ化）
 ```
 
-本番サーバーで動くのは **Apache + PHP + データベースだけ**です。Node.js はビルド時のみ
-使用し、本番環境には常駐しません。
+常駐サーバーはありません。関数はリクエストのたびに起動し、終わったら消えます。
+それが設計に効いてくる箇所は3つあります。
+
+| 制約                           | 対応                                    |
+| ------------------------------ | --------------------------------------- |
+| ファイルシステムが揮発する     | ログは stdout（プラットフォームが収集） |
+| プロセス間で状態を共有できない | レート制限のカウンタは DB に置く        |
+| 接続を開いては捨てる           | Neon の**プール**エンドポイントを使う   |
 
 ## 設計上の中心的な判断
 
@@ -54,24 +60,32 @@ Phaser インスタンスは `GameLayer` が**セッション中ずっと保持*
   フレーム数が変わっても呼び出し側は無変更です。
 - 差し替え手順は [ASSETS.md](ASSETS.md)（マニフェストから自動生成）にあります。
 
-### 3. スコアの計算式をフロントとバックで共有する
+### 3. スコアの計算式はゲームと API で「同じコード」
 
 これがランキングの信頼性の根幹です。
 
 ```text
-shared/game-rules/v3.json          ← 定数の唯一の出所
-        │                                    │
-        │ import                             │ json_decode
-        ▼                                    ▼
-src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
-        │                                    │
-        └──── shared/game-rules/score-fixtures.json ────┘
-                （両方のテストが同じ期待値を検証）
+        shared/game-rules/v3.json      ← 定数の唯一の出所
+                    │
+                    ▼
+        shared/core/scoring.ts         ← 計算式の唯一の実装
+           ╱                 ╲
+          ▼                   ▼
+  ゲーム（画面の数字）    API（保存される数字）
+          ╲                 ╱
+           shared/core/validation.ts   ← 不正検証も1つ
 ```
 
-- 定数は**二重に書きません**。両方が同じ JSON を読みます。
-- 計算式はコードが2つあるので、**ゴールデンフィクスチャ**で固定します。片方だけ式を変えると
-  もう片方のテストが落ちます。
+以前はバックエンドが別言語だったため、式と検証をそれぞれ2回書いて**ゴールデン
+フィクスチャ**で一致を担保していました。TypeScript に統一したことで実装は1つになり、
+ずれる余地そのものが消えています。
+
+`shared/core/` は**相対 import しか使いません**。Vite（エイリアスあり）とサーバーレス
+関数のバンドラ（エイリアスなし）の両方から読まれるためです。`src/` 側の
+`config/rules.ts` などは、この実体を再 export しているだけの薄いファイルです。
+
+- フィクスチャ（`score-fixtures.json`）は今も残しています。役割は言語間のずれ検出から、
+  **手計算した仕様として式そのものを固定する**ことに変わりました。
 - スコアが再計算できるのは、各ステージが得点要素を**整数の "unit" メトリクス**に積算して
   いるからです（例: コンボは `comboUnits`、速度ボーナスは `speedUnits`）。その結果、
   スコアは `f(metrics, rules)` という純粋関数になり、サーバーはタイミングを知らなくても
@@ -79,7 +93,7 @@ src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
 
 ### 4. サーバーがスコアの正本
 
-クライアントが送る `totalScore` は**保存しません**。PHP が `metrics` から再計算します。
+クライアントが送る `totalScore` は**保存しません**。API が `metrics` から再計算します。
 加えて次を検証します。
 
 | 検査           | 内容                                       |
@@ -125,10 +139,16 @@ src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
 ├── index.html                  viewport / safe-area の設定を含む HTML シェル
 ├── vite.config.ts              ビルド設定、/api のプロキシ、LAN 公開
 │
-├── shared/
+├── shared/                     ゲームと API が共有するコード（相対 import のみ）
+│   ├── core/
+│   │   ├── rules.ts            ★ 型付きルールセット
+│   │   ├── scoring.ts          ★ スコア式（実装は1つだけ）
+│   │   ├── validation.ts       ★ 不正検証（同上）
+│   │   ├── nickname.ts         ニックネームの正規化
+│   │   └── api.ts              HTTP の型定義
 │   └── game-rules/
-│       ├── v3.json             ★ スコア定数（TS と PHP の両方が読む）
-│       ├── score-fixtures.json ★ 両方のテストが検証するゴールデン値
+│       ├── v3.json             ★ スコア定数（ゲームと API の両方が読む）
+│       ├── score-fixtures.json ★ 手計算したゴールデン値（式を固定）
 │       └── README.md
 │
 ├── src/
@@ -146,7 +166,7 @@ src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
 │   │   └── assetRegistry.ts    ID → URL・メタデータ（Phaser 非依存）
 │   │
 │   ├── config/
-│   │   ├── rules.ts            shared/game-rules の型付きローダー
+│   │   ├── rules.ts            shared/core/rules.ts の再 export
 │   │   ├── game.ts             タイトル、機能フラグ、難易度、メンテナンス
 │   │   └── stages/             ステージごとのチューニング値
 │   │       ├── late.ts
@@ -159,7 +179,7 @@ src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
 │   │   │   ├── GameHost.ts         Phaser インスタンスの管理
 │   │   │   ├── AssetLoader.ts      レジストリ → Phaser、代替テクスチャ
 │   │   │   ├── ScoreManager.ts     メトリクス集約 → スコア → UI イベント
-│   │   │   ├── scoring.ts          ★ スコア式（PHP と対）
+│   │   │   ├── scoring.ts          shared/core/scoring.ts の再 export
 │   │   │   ├── GameClock.ts        一時停止に強い時計
 │   │   │   ├── DragController.ts   相対ドラッグ入力（1軸・ステージ1）
 │   │   │   ├── DragVector.ts       相対ドラッグ入力（2軸・ステージ3）
@@ -188,23 +208,29 @@ src/game/core/scoring.ts          backend/src/Service/ScoreCalculator.php
 │   ├── generate-asset-docs.ts      ASSETS.md の生成
 │   └── lib/                        PNG/WAV エンコーダ
 │
-├── tests/                      Vitest（純粋ロジックのみ）
+├── tests/                      Vitest
+│   ├── *.test.ts               純粋ロジック（スコア・乱数・ステルスモデル等）
+│   └── server/                 API を実 HTTP + 実 PostgreSQL(PGlite) で検証
 │
-├── backend/                    PHP API
-│   ├── public/index.php        唯一の公開エントリ
-│   ├── src/
-│   │   ├── AppFactory.php      ルーティングとミドルウェアの組み立て
-│   │   ├── Controller/         薄い。解析 → 委譲 → 整形のみ
-│   │   ├── Service/            RunService / ScoreCalculator / LeaderboardService
-│   │   ├── Repository/         PDO（すべてプリペアド）
-│   │   ├── Validation/         リクエスト形状・スコア・ニックネーム
-│   │   ├── Middleware/         エラー・JSON・CORS・レート制限・セキュリティ
-│   │   ├── Domain/             Run / StageSubmission / ValidationOutcome
-│   │   ├── Config/             Env / Database / RuleSet
-│   │   └── Support/            Clock / Ids / Logger / Migrator
-│   ├── migrations/             mysql / pgsql / sqlite
-│   ├── bin/                    migrate.php / housekeeping.php
-│   └── tests/                  PHPUnit（実際の HTTP スタックを通す）
+├── api/                        ★ Vercel のルーティング規約。1行ずつの再 export
+│   ├── health.ts
+│   ├── leaderboard.ts
+│   ├── runs/index.ts
+│   ├── runs/[runId]/complete.ts
+│   └── cron/housekeeping.ts    CRON_SECRET で保護
+│
+├── server/                     API の中身（ホストに依存しません）
+│   ├── http/
+│   │   ├── routes.ts           ★ ハンドラの実体。テストはここを直接呼びます
+│   │   ├── route.ts            共通パイプライン（エラー・ヘッダ・CORS・制限・本文）
+│   │   └── apiError.ts         唯一の投げてよい例外型
+│   ├── service/                runService / leaderboardService
+│   ├── repository/             SQL（すべてパラメータ化）
+│   ├── validation/             リクエスト形状
+│   ├── domain/                 Run とその状態
+│   ├── db/                     Neon 接続・型・マイグレーション
+│   ├── config/env.ts           環境変数（必須値が無ければ即エラー）
+│   └── support/                Clock / Ids / Logger
 │
 └── docs/
 ```
@@ -255,7 +281,7 @@ JSON レスポンス
 2. `src/config/stages/<id>.ts` にチューニング値を書く。
 3. `shared/game-rules/v3.json` の `stageOrder` に id を足し、`stages.<id>` に
    `scoring` / `limits` / `rank` を書く。
-4. `src/game/core/scoring.ts` と `backend/src/Service/ScoreCalculator.php` に
+4. `shared/core/scoring.ts` に
    同じ式を足し、`score-fixtures.json` にゴールデン値を足す。
 5. `src/game/stages/index.ts` の `STAGE_MODULES` に1行足す。
 6. 素材を `assetManifest.ts` の新しいバンドルに足す。

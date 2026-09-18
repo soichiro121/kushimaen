@@ -1,7 +1,8 @@
 /**
  * Nickname entry. No account, no login - just a name for the leaderboard.
  *
- * The same sanitisation runs again on the PHP side; this copy exists to give
+ * The same sanitisation runs again on arrival at the API - literally the same
+ * module - so this copy exists to give
  * immediate feedback, not as a security measure.
  */
 import { useState } from 'react';

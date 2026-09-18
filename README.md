@@ -10,8 +10,11 @@
 | 3. 放課後ステルス  | 先生の視界を避けて校内を回り、昇降口へ脱出 | 約45秒 |
 
 - **フロントエンド**: Vite + React + TypeScript + Phaser 3（静的ファイルとして配信）
-- **バックエンド**: PHP 8.2+ / Slim 4 / PDO（Apache 上で動作）
-- **本番環境に Node.js は不要です。** Node.js はビルドツールとしてのみ使用します。
+- **バックエンド**: TypeScript のサーバーレス関数（`api/`）+ Neon Postgres
+- **ホスティング**: Vercel。ゲームと API が同一オリジンなので CORS がありません。
+
+スコアの計算式と検証ロジックは `shared/core/` に**1つだけ**あり、ゲームと API が同じ
+コードを呼びます。画面に出る数字とランキングに載る数字がずれることが原理的にありません。
 
 ---
 
@@ -19,19 +22,18 @@
 
 ### 開発（このリポジトリを触る人）
 
-| ツール   | バージョン                    | 用途                           |
-| -------- | ----------------------------- | ------------------------------ |
-| Node.js  | **20.11 以上**（推奨 22 LTS） | フロントエンドのビルドとテスト |
-| npm      | 10 以上                       | Node.js に同梱                 |
-| PHP      | 8.2 以上（本番は 8.3+ 推奨）  | API の開発サーバー・テスト     |
-| Composer | 2.x                           | PHP の依存解決                 |
+| ツール  | バージョン                    | 用途                |
+| ------- | ----------------------------- | ------------------- |
+| Node.js | **20.11 以上**（推奨 22 LTS） | ビルド・テスト・API |
+| npm     | 10 以上                       | Node.js に同梱      |
 
-PHP は API を触らない場合は不要です（後述の LOCAL MODE で遊べます）。
+それだけです。データベースサーバーも Docker も要りません。API のテストは
+**PGlite**（WebAssembly 版の本物の PostgreSQL）に対して走ります。
 
-### 本番サーバー
+### 本番
 
-Apache + PHP 8.3+ + Composer + データベース（MySQL/MariaDB か PostgreSQL）だけです。
-詳細は [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) を参照してください。
+[Vercel](https://vercel.com) と [Neon](https://neon.tech)。どちらも無料枠で動きます。
+手順は [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) にあります。
 
 ---
 
@@ -62,24 +64,16 @@ npm run preview   # こちらも LAN に公開されます
 
 ### API も一緒に動かす
 
-別のターミナルで:
-
 ```bash
-cd backend
-composer install
-cp .env.example .env       # DB_DSN を設定（開発では SQLite が手軽です）
-php bin/migrate.php
-php -S localhost:8080 -t public
+npm i -g vercel
+vercel dev
 ```
 
-Vite の開発サーバーが `/api` を `http://localhost:8080` にプロキシします。フロントエンドの
-コードは常に同一オリジンの相対パス `/api/...` を使うので、URL のハードコードはありません。
+ゲームと `/api/*` が同じポートで動きます。`.env` に Neon の `DATABASE_URL` を入れて
+おいてください（開発用ブランチを指すのが安全です）。
 
-開発用に SQLite を使う例（`backend/.env`）:
-
-```dotenv
-DB_DSN="sqlite:/絶対パス/backend/var/komato.sqlite"
-```
+フロントエンドのコードは常に同一オリジンの相対パス `/api/...` を使うので、URL の
+ハードコードはどこにもありません。
 
 ---
 
@@ -97,16 +91,11 @@ DB_DSN="sqlite:/絶対パス/backend/var/komato.sqlite"
 | `npm run assets:placeholders` | 仮素材（画像・音声）を再生成                   |
 | `npm run assets:docs`         | [docs/ASSETS.md](docs/ASSETS.md) を再生成      |
 | `npm run balance`             | スコアバランスをシミュレートして分布を出力     |
+| `vercel dev`                  | ゲームと API を同じポートで起動                |
+| `npm run db:migrate`          | `DATABASE_URL` にマイグレーションを適用        |
 
-バックエンド:
-
-| コマンド（`backend/` 内）         | 内容                          |
-| --------------------------------- | ----------------------------- |
-| `composer install`                | 依存パッケージの取得          |
-| `php bin/migrate.php`             | マイグレーション適用          |
-| `php bin/housekeeping.php`        | 古いデータの掃除（cron 向け） |
-| `composer test`                   | PHPUnit                       |
-| `php -S localhost:8080 -t public` | API 開発サーバー              |
+`npm test` にはAPIのテストも含まれます（PGlite に対して実行されるので、データベース
+サーバーは不要です）。
 
 ---
 
@@ -132,17 +121,18 @@ DB_DSN="sqlite:/絶対パス/backend/var/komato.sqlite"
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)               | 全体構成、ディレクトリ、ステージの追加方法 |
 | [docs/ASSETS.md](docs/ASSETS.md)                           | **素材の差し替え手順**（自動生成）         |
 | [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md)                 | 各ゲームのルールとスコア設計               |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                   | Apache + PHP への本番デプロイ              |
-| [shared/game-rules/README.md](shared/game-rules/README.md) | フロントとバックのスコア一致の仕組み       |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                   | Vercel + Neon への本番デプロイ             |
+| [shared/game-rules/README.md](shared/game-rules/README.md) | スコア定数の共有とバージョン管理           |
 
 ---
 
 ## 環境変数
 
-フロントエンドは `.env.example`、バックエンドは `backend/.env.example` を参照してください。
-**`.env` は絶対にコミットしないでください**（`.gitignore` 済み）。
+すべて `.env.example` に説明があります。**`.env` は絶対にコミットしないでください**
+（`.gitignore` 済み）。本番の値は Vercel の環境変数に入れます。
 
-どちらも未設定のまま動きます。フロントエンドは API に繋がらなければ LOCAL MODE で動作します。
+`DATABASE_URL` 以外は未設定でも動きます。API に繋がらなければ LOCAL MODE で、
+ランキングは `localStorage` に保存されます。
 
 ---
 

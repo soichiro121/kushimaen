@@ -20,19 +20,26 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,css,json,md}\"",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "db:migrate": "vite-node scripts/db-migrate.ts",
+    "dev:api": "vercel dev"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "phaser": "^3.90.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "ws": "^8.21.3",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@eslint/js": "^9.14.0",
     "@types/node": "^22.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.18.1",
+    "@vercel/node": "^13.0.1",
     "@vitejs/plugin-react": "^4.3.3",
     "eslint": "^9.14.0",
     "eslint-plugin-react-hooks": "^5.0.0",

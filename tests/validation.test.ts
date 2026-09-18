@@ -1,9 +1,9 @@
 /**
- * Submission validation (the LOCAL MODE mirror of the PHP validator).
+ * Submission validation.
  *
- * The properties asserted here are the ones the leaderboard's integrity rests on, so
- * they are tested on both sides. The authoritative copy is
- * `backend/src/Validation/StageResultValidator.php`, covered by `RunApiTest`.
+ * The properties asserted here are the ones the leaderboard's integrity rests on.
+ * This is the SAME module the API runs on arrival - `tests/server/runApi.test.ts`
+ * covers it again over HTTP, against a real database.
  */
 import { describe, expect, it } from 'vitest';
 import { RULES } from '@/config/rules';

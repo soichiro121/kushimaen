@@ -1,9 +1,12 @@
 /**
  * Vitest setup.
  *
- * The unit tests cover pure logic (scoring, RNG, validation, problem generation,
- * state machines), so no Phaser/WebGL environment is created. A few browser APIs are
+ * Most tests cover pure logic (scoring, RNG, validation, problem generation, the
+ * stealth model), so no Phaser/WebGL environment is created. A few browser APIs are
  * stubbed because modules under test touch them at import time.
+ *
+ * The API tests under `tests/server/` opt into the `node` environment instead, so
+ * every browser global here has to be optional.
  */
 import { beforeEach, vi } from 'vitest';
 
@@ -29,5 +32,7 @@ if (!globalThis.matchMedia) {
 }
 
 beforeEach(() => {
-  localStorage.clear();
+  // The API tests run in the `node` environment (they need real WASM and Node
+  // crypto), where there is no localStorage to clear.
+  if (typeof localStorage !== 'undefined') localStorage.clear();
 });

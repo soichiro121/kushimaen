@@ -5,7 +5,7 @@
  * object and contains no magic numbers.
  *
  * Score-affecting constants are NOT here - they live in `shared/game-rules/vN.json`
- * because the PHP backend has to agree with them.
+ * because the API has to agree with them.
  */
 import { RULES } from '@/config/rules';
 import type { AssetId } from '@/assets/assetRegistry';

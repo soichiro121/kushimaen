@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'backend/vendor', 'node_modules', '*.cjs'] },
+  { ignores: ['dist', 'coverage', 'node_modules', '.vercel', '*.cjs'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -33,5 +33,15 @@ export default tseslint.config(
   {
     files: ['tests/**/*.ts', 'src/**/*.test.ts'],
     rules: { 'no-console': 'off' },
+  },
+  {
+    // The API runs on Node, never in a browser: flag anything that assumes a DOM.
+    files: ['server/**/*.ts', 'api/**/*.ts', 'scripts/**/*.ts'],
+    languageOptions: { globals: globals.node },
+    rules: {
+      // stdout IS the log sink on a serverless platform.
+      'no-console': 'off',
+      'react-refresh/only-export-components': 'off',
+    },
   },
 );

@@ -1,6 +1,5 @@
 # dependencies
 node_modules/
-backend/vendor/
 
 # build output
 dist/
@@ -11,9 +10,10 @@ coverage/
 .env
 .env.local
 .env.*.local
-backend/.env
-backend/var/
 !.env.example
+
+# vercel
+.vercel
 
 # editor / os
 .DS_Store

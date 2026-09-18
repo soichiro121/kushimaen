@@ -13,7 +13,7 @@
 
 数値はすべて設定ファイルにあります。
 
-- スコアに影響する定数 → `shared/game-rules/v3.json`（**PHP も同じファイルを読みます**）
+- スコアに影響する定数 → `shared/game-rules/v3.json`（**API も同じファイルを読みます**）
 - 挙動のチューニング → `src/config/stages/*.ts`
 
 ---
@@ -370,10 +370,9 @@ npm run balance
 `shared/game-rules/v3.json` を変更したら:
 
 1. `shared/game-rules/score-fixtures.json` の期待値を更新する
-2. `npm test` と `cd backend && composer test` の両方を通す
+2. `npm test` を通す（API のテストも含まれます）
 3. **既存のスコアが動くような変更なら、必ず新しい `vN.json` を作って `configVersion` を
-   上げる**（`backend/.env` の `CONFIG_VERSION`、`RuleSet::CURRENT_VERSION`、
-   `src/config/rules.ts` の import を合わせる）
+   上げる**（`shared/core/rules.ts` の import を新しい `vN.json` に差し替える）
 
    ランキングは現在の `configVersion` のスコアだけを表示します。古い世代のスコアは
    削除されずに残りますが、別世代として扱われます。バージョンを上げずにバランスを

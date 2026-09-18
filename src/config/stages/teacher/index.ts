@@ -3,7 +3,7 @@
  *
  * Everything a designer would want to change lives here; the scene contains no
  * magic numbers. Score constants are NOT here - they live in
- * `shared/game-rules/vN.json` because the PHP backend has to agree with them.
+ * `shared/game-rules/vN.json` because the API has to agree with them.
  *
  * The school layout is data too, in `./maps/`.
  */

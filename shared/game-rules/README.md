@@ -2,26 +2,29 @@
 
 This directory is the **single source of truth** for every number that affects a score.
 
-| File                  | Purpose                                                                                                    |
-| --------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `v3.json`             | Versioned rule set. Read by the TypeScript frontend **and** by the PHP backend.                            |
-| `v2.json`             | The previous generation, kept so a run recorded under it can still be interpreted.                         |
-| `score-fixtures.json` | Golden test vectors. Asserted by both `tests/scoring.test.ts` and `backend/tests/ScoreCalculatorTest.php`. |
+| File                  | Purpose                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| `v3.json`             | Versioned rule set. Read by the game **and** by the API routes.                    |
+| `v2.json`             | The previous generation, kept so a run recorded under it can still be interpreted. |
+| `score-fixtures.json` | Golden test vectors, computed by hand. Asserted by `tests/scoring.test.ts`.        |
 
 ## Why
 
-The frontend computes a score so the player sees feedback instantly. The backend
-**recomputes** the same score from the submitted metrics and stores its own value.
-If the two formulas ever diverged, honest players would be silently penalised.
+The game computes a score so the player sees feedback instantly. The API
+**recomputes** the same score from the submitted metrics and stores its own value —
+the client's number is never trusted. If the two ever disagreed, honest players would
+be silently penalised.
 
 Two mechanisms prevent that:
 
-1. **Constants are not duplicated.** Both runtimes `import` / `json_decode` the same
-   `v3.json`. The backend copy is a symlink-free read of `../shared/game-rules` (see
-   `backend/src/Config/RuleSet.php`).
-2. **Formulas are pinned by golden fixtures.** `score-fixtures.json` contains metric
-   inputs and the exact expected score. Both test suites read it. A formula change on
-   one side alone turns the other side red.
+1. **The formula is not duplicated at all.** `shared/core/scoring.ts` is imported by
+   the game _and_ by `api/runs/[runId]/complete.ts`. There is no second implementation
+   to keep in step — an earlier version of this project had one in another language,
+   and keeping
+   the two honest is what `score-fixtures.json` was originally for.
+2. **Formulas are still pinned by golden fixtures.** `score-fixtures.json` contains
+   metric inputs and the exact expected score, computed by hand from the rule set. It
+   now guards against a careless edit rather than against cross-language drift.
 
 ## Score model: integer "units"
 
@@ -52,7 +55,7 @@ so an inflated unit count is rejected by the validator rather than silently scor
 
 1. Copy the current `vN.json` to `v(N+1).json` and edit it.
 2. Bump `configVersion` inside the new file.
-3. Point `src/config/rules.ts` and `backend/src/Config/RuleSet.php` at the new file.
+3. Point `shared/core/rules.ts` at the new file.
 4. Add fixtures for the new version.
 
 Old runs keep the `config_version` they were created with, so leaderboards can be

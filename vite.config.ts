@@ -6,10 +6,11 @@ import { fileURLToPath, URL } from 'node:url';
 /**
  * Vite configuration.
  *
- * - The frontend is a pure static bundle: the production runtime is Apache,
- *   Node.js is only ever a build-time tool.
- * - `/api` is proxied to the PHP dev server so that frontend code can always
- *   use same-origin relative URLs (`/api/...`) in both dev and production.
+ * - The frontend is a pure static bundle. Vercel serves it, and the API lives
+ *   beside it as serverless functions under `api/`.
+ * - `/api` is proxied during a plain `npm run dev` so frontend code can always use
+ *   same-origin relative URLs (`/api/...`) in both dev and production. Running
+ *   `vercel dev` instead serves the game AND the API on one port, and needs no proxy.
  */
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
@@ -28,7 +29,7 @@ export default defineConfig(({ mode }) => ({
     strictPort: false,
     proxy: {
       '/api': {
-        target: process.env.VITE_DEV_API_PROXY ?? 'http://localhost:8080',
+        target: process.env.VITE_DEV_API_PROXY ?? 'http://localhost:3000',
         changeOrigin: true,
       },
     },
@@ -41,7 +42,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: 'es2020',
-    // Relative base keeps the bundle deployable from a subdirectory on Apache.
+    // Relative base keeps the bundle deployable from a subdirectory as well as root.
     assetsInlineLimit: 4096,
     sourcemap: mode !== 'production',
     rollupOptions: {

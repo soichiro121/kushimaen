@@ -1,7 +1,7 @@
 /**
  * LOCAL MODE leaderboard, backed by localStorage.
  *
- * Exists so the game is fully playable and testable with no PHP backend running.
+ * Exists so the game is fully playable and testable with no API reachable.
  * It is explicitly NOT a security boundary - it is a development convenience, and
  * the UI labels it as local.
  */

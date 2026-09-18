@@ -3,7 +3,7 @@
  *
  *     gameplay event  ->  ScoreManager  ->  metrics  ->  score formula  ->  UI event
  *
- * Scoring rules live in `scoring.ts` (shared with PHP). This class only accumulates
+ * Scoring rules live in `scoring.ts` (shared with the API). This class only accumulates
  * metrics and derives the score from them, which guarantees three things:
  *
  *   - the number on screen is always exactly `computeStageScore(stageId, metrics)`,

@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** Base URL for the PHP API. Empty string = same-origin `/api` (the production default). */
+  /** Base URL for the API. Empty string = same-origin `/api` (the production default). */
   readonly VITE_API_BASE_URL?: string;
   /** Comma-separated stage ids to hide without a code change, e.g. `teacher`. */
   readonly VITE_DISABLED_STAGES?: string;

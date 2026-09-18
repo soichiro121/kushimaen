@@ -7,7 +7,7 @@
  * localStorage. Nothing else in the app branches on this - the services do.
  *
  * Sticky in one direction only. A successful probe is cached for the session, but a
- * FAILED probe is only cached briefly: a single slow first request (a cold PHP
+ * FAILED probe is only cached briefly: a single slow first request (a cold function
  * worker, a school Wi-Fi hiccup) must not silently strand the whole session in local
  * mode, because the player would then finish a run whose score never reaches the
  * real leaderboard and never be told why.

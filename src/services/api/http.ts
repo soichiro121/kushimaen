@@ -1,5 +1,5 @@
 /**
- * Thin HTTP client for the PHP API.
+ * Thin HTTP client for the API.
  *
  * API URLs are never hard-coded at call sites: everything goes through `apiUrl()`,
  * which resolves to a same-origin `/api/...` path in production (so there is no CORS

@@ -4,7 +4,7 @@
  * ADDING A FOURTH MINI-GAME
  *   1. Create `src/game/stages/<id>/` with a module that satisfies `StageModule`.
  *   2. Add its id to `stageOrder` and a `stages.<id>` block in
- *      `shared/game-rules/v2.json` (plus the matching PHP score branch).
+ *      `shared/game-rules/v3.json` (plus a branch in `shared/core/scoring.ts`).
  *   3. Add one line to `STAGE_MODULES` below.
  *
  * Nothing else in the app - the flow machine, result screens, submission pipeline,
