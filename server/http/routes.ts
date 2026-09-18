@@ -6,16 +6,16 @@
  * about. Keeping the handlers here means the tests import the real thing, and moving
  * to another host later is a matter of re-pointing the thin files.
  */
-import { RULES } from '../../shared/core/rules';
-import { isRunId } from '../domain/run';
-import { board, parseLimit, parsePeriod } from '../service/leaderboardService';
-import { completeRun, createRun } from '../service/runService';
-import { parseSubmission } from '../validation/submissionRequest';
-import { ApiError } from './apiError';
-import { createRoute, json, type Handler } from './route';
-import type { Clock } from '../support/clock';
-import type { Database } from '../db/types';
-import type { HealthResponse } from '../../shared/core/api';
+import { RULES } from '../../shared/core/rules.js';
+import { isRunId } from '../domain/run.js';
+import { board, parseLimit, parsePeriod } from '../service/leaderboardService.js';
+import { completeRun, createRun } from '../service/runService.js';
+import { parseSubmission } from '../validation/submissionRequest.js';
+import { ApiError } from './apiError.js';
+import { createRoute, json, type Handler } from './route.js';
+import type { Clock } from '../support/clock.js';
+import type { Database } from '../db/types.js';
+import type { HealthResponse } from '../../shared/core/api.js';
 
 export interface RouteDeps {
   db?: Database;

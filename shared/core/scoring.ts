@@ -18,7 +18,7 @@
  *    popup were derived from the clamped value it would read "+0" and the player
  *    would have no idea their mistakes were costing anything.
  */
-import { RULES, type StageId } from './rules';
+import { RULES, type StageId } from './rules.js';
 
 /** Metrics travel over the wire as a flat numeric map - trivially serialisable. */
 export type StageMetrics = Readonly<Record<string, number>>;

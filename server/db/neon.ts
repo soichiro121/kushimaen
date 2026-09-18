@@ -11,8 +11,8 @@
  */
 import { neonConfig, Pool } from '@neondatabase/serverless';
 import ws from 'ws';
-import { requireEnv } from '../config/env';
-import type { Database, QueryResult, SqlClient } from './types';
+import { requireEnv } from '../config/env.js';
+import type { Database, QueryResult, SqlClient } from './types.js';
 
 neonConfig.webSocketConstructor = ws;
 

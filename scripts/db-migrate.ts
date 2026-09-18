@@ -8,8 +8,8 @@
  *
  * BUILD/OPS TOOL. It is not part of the deployed bundle.
  */
-import { createNeonDatabase } from '../server/db/neon';
-import { applyMigrations } from '../server/db/migrate';
+import { createNeonDatabase } from '../server/db/neon.js';
+import { applyMigrations } from '../server/db/migrate.js';
 
 const db = createNeonDatabase();
 try {

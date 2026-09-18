@@ -10,7 +10,7 @@
  * which escapes text nodes by construction; escaping here as well would double-encode
  * and put a literal `&amp;` on screen - the wrong fix in the wrong layer.
  */
-import { RULES } from './rules';
+import { RULES } from './rules.js';
 
 export const NICKNAME_MIN = RULES.nickname.minLength;
 export const NICKNAME_MAX = RULES.nickname.maxLength;

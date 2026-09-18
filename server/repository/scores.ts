@@ -8,8 +8,8 @@
  * rules are not comparable, so each generation gets its own board instead of old
  * inflated totals sitting permanently on top.
  */
-import type { SqlClient } from '../db/types';
-import { CONFIG } from '../config/env';
+import type { SqlClient } from '../db/types.js';
+import { CONFIG } from '../config/env.js';
 
 export interface ScoreRow {
   rank: number;

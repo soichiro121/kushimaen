@@ -9,7 +9,7 @@
  * The bucket key is a SHA-256 hash. A raw IP address is never stored.
  */
 import { createHash } from 'node:crypto';
-import type { SqlClient } from '../db/types';
+import type { SqlClient } from '../db/types.js';
 
 export interface RateLimitOutcome {
   readonly allowed: boolean;

@@ -4,10 +4,10 @@
  * Ranking lives in the repository (it is a SQL concern); this shapes the response and
  * marks the caller's own row.
  */
-import { RULES } from '../../shared/core/rules';
-import { countValidScores, placementOf, topScores, type Period } from '../repository/scores';
-import type { LeaderboardEntry, LeaderboardResponse } from '../../shared/core/api';
-import type { SqlClient } from '../db/types';
+import { RULES } from '../../shared/core/rules.js';
+import { countValidScores, placementOf, topScores, type Period } from '../repository/scores.js';
+import type { LeaderboardEntry, LeaderboardResponse } from '../../shared/core/api.js';
+import type { SqlClient } from '../db/types.js';
 
 export const DEFAULT_LIMIT = 50;
 export const MAX_LIMIT = 100;

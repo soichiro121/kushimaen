@@ -11,9 +11,9 @@
  * you on top of the board. A forger has to submit a self-consistent set of metrics
  * that are all within human limits, which is a far higher bar than editing a number.
  */
-import { RULES, type StageId } from './rules';
-import { computeStageScore, maxPlausibleStageScore } from './scoring';
-import type { StageSubmission } from './api';
+import { RULES, type StageId } from './rules.js';
+import { computeStageScore, maxPlausibleStageScore } from './scoring.js';
+import type { StageSubmission } from './api.js';
 
 export interface ValidationIssue {
   readonly code: string;

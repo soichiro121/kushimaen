@@ -11,23 +11,23 @@
  * module the game itself uses to draw the number on screen - so the two cannot
  * disagree, and a forged total is simply ignored.
  */
-import { RULES } from '../../shared/core/rules';
-import { validateSubmission } from '../../shared/core/validation';
+import { RULES } from '../../shared/core/rules.js';
+import { validateSubmission } from '../../shared/core/validation.js';
 import type {
   CompleteRunResponse,
   CreateRunResponse,
   StageSubmission,
-} from '../../shared/core/api';
-import { RUN_STATUS, isExpiredAt, isOpen, type Run } from '../domain/run';
-import { findRun, insertRun, markRunCompleted } from '../repository/runs';
-import { insertScore, placementOf } from '../repository/scores';
-import { insertStageResults } from '../repository/stageResults';
-import { sanitizeNickname, validateNickname } from '../../shared/core/nickname';
-import { ApiError } from '../http/apiError';
-import { newRunId, newSeed } from '../support/ids';
-import { logger } from '../support/logger';
-import type { Database } from '../db/types';
-import type { Clock } from '../support/clock';
+} from '../../shared/core/api.js';
+import { RUN_STATUS, isExpiredAt, isOpen, type Run } from '../domain/run.js';
+import { findRun, insertRun, markRunCompleted } from '../repository/runs.js';
+import { insertScore, placementOf } from '../repository/scores.js';
+import { insertStageResults } from '../repository/stageResults.js';
+import { sanitizeNickname, validateNickname } from '../../shared/core/nickname.js';
+import { ApiError } from '../http/apiError.js';
+import { newRunId, newSeed } from '../support/ids.js';
+import { logger } from '../support/logger.js';
+import type { Database } from '../db/types.js';
+import type { Clock } from '../support/clock.js';
 
 /**
  * Opens a run.

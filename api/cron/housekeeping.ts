@@ -8,11 +8,11 @@
  * this is a 404. An open endpoint that deletes rows is not something to leave lying
  * around, and a 404 does not advertise that it exists.
  */
-import { optionalEnv } from '../../server/config/env';
-import { database } from '../../server/db/neon';
-import { deleteExpiredRunsBefore } from '../../server/repository/runs';
-import { purgeRateLimitsBefore } from '../../server/repository/rateLimits';
-import { logger } from '../../server/support/logger';
+import { optionalEnv } from '../../server/config/env.js';
+import { database } from '../../server/db/neon.js';
+import { deleteExpiredRunsBefore } from '../../server/repository/runs.js';
+import { purgeRateLimitsBefore } from '../../server/repository/rateLimits.js';
+import { logger } from '../../server/support/logger.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

@@ -4,8 +4,8 @@
  * Every statement is parameterised: the SQL strings below are literals and every
  * value travels in the params array. Nothing concatenates user input.
  */
-import { RUN_STATUS, type Run, type RunStatus } from '../domain/run';
-import type { SqlClient } from '../db/types';
+import { RUN_STATUS, type Run, type RunStatus } from '../domain/run.js';
+import type { SqlClient } from '../db/types.js';
 
 interface RunRow {
   id: string;

@@ -1,4 +1,23 @@
 {
+  /*
+   * Solution-style root: `tsc -b` builds the three referenced projects below, each
+   * with its own options.
+   *
+   * The `compilerOptions` here are NOT used by that build. They exist for Vercel:
+   * the serverless-function builder type-checks each `api/*` entry point on its own
+   * and reads THIS file for options. Without `resolveJsonModule` it cannot follow
+   * `shared/core/rules.ts` into the rule set and reports a failure for every route.
+   *
+   * For the same reason every relative import under `server/`, `api/` and
+   * `shared/core/` carries an explicit `.js` extension: that builder resolves modules
+   * as Node ESM (`node16`), where extensionless relative imports are an error. Vite
+   * and Vitest map `./x.js` onto `x.ts`, so one spelling satisfies all three.
+   */
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

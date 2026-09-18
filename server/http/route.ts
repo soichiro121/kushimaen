@@ -15,13 +15,13 @@
  *   rate limit        -> shared counter in the database
  *   body              -> size-limited, strictly parsed JSON
  */
-import { CONFIG, isProduction } from '../config/env';
-import { database } from '../db/neon';
-import { hitRateLimit } from '../repository/rateLimits';
-import { ApiError, isApiError } from './apiError';
-import { logger } from '../support/logger';
-import { systemClock, type Clock } from '../support/clock';
-import type { Database } from '../db/types';
+import { CONFIG, isProduction } from '../config/env.js';
+import { database } from '../db/neon.js';
+import { hitRateLimit } from '../repository/rateLimits.js';
+import { ApiError, isApiError } from './apiError.js';
+import { logger } from '../support/logger.js';
+import { systemClock, type Clock } from '../support/clock.js';
+import type { Database } from '../db/types.js';
 
 export interface RouteContext {
   readonly request: Request;

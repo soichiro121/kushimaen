@@ -5,7 +5,7 @@
  * in `api/`. One declaration, so a response shape cannot drift from what the client
  * expects to parse.
  */
-import type { StageId } from './rules';
+import type { StageId } from './rules.js';
 
 export interface HealthResponse {
   status: 'ok';

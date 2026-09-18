@@ -1,3 +1,3 @@
-import { completeRunRoute } from '../../../server/http/routes';
+import { completeRunRoute } from '../../../server/http/routes.js';
 
 export default completeRunRoute();

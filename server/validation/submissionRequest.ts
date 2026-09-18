@@ -8,9 +8,9 @@
  * Everything here is a hard bound rather than a judgement call: an unbounded metric
  * map is a memory-exhaustion vector, and a 10MB nickname is not a typo.
  */
-import { ApiError } from '../http/apiError';
-import type { StageSubmission } from '../../shared/core/api';
-import type { StageId } from '../../shared/core/rules';
+import { ApiError } from '../http/apiError.js';
+import type { StageSubmission } from '../../shared/core/api.js';
+import type { StageId } from '../../shared/core/rules.js';
 
 const MAX_STAGES = 8;
 const MAX_METRICS_PER_STAGE = 32;

@@ -7,8 +7,8 @@
  * `score` here is the SERVER-recomputed value. `client_score` is what the client
  * claimed, stored alongside it precisely so the two can be compared later.
  */
-import type { SqlClient } from '../db/types';
-import type { StageSubmission } from '../../shared/core/api';
+import type { SqlClient } from '../db/types.js';
+import type { StageSubmission } from '../../shared/core/api.js';
 
 export async function insertStageResults(
   db: SqlClient,
