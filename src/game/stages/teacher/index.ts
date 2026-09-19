@@ -6,6 +6,7 @@ import type { StageModule } from '@/game/core/stageTypes';
 export const teacherStage: StageModule = {
   id: 'teacher',
   label: '放課後ステルス',
+  shortLabel: 'ステルス',
   tagline: '先生の目を盗んで校内を回れ',
   rules: [
     'ドラッグした方向へ移動する',

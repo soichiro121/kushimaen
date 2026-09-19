@@ -5,6 +5,7 @@ import type { StageModule } from '@/game/core/stageTypes';
 export const breadStage: StageModule = {
   id: 'bread',
   label: '羽沢パン購入RTA',
+  shortLabel: 'パン',
   tagline: '注文のパンを最速でタップ',
   rules: [
     '上に表示された注文と同じパンをタップ',

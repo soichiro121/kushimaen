@@ -11,6 +11,7 @@ import type { StageModule } from '@/game/core/stageTypes';
 export const lateStage: StageModule = {
   id: 'late',
   label: '遅刻回避',
+  shortLabel: '遅刻',
   tagline: '私道を駆け抜けて校門へ',
   rules: [
     '生徒をギリギリでかわすほど高得点',

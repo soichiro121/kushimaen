@@ -130,8 +130,11 @@ export async function completeRun(
     });
   }
 
+  // The rank reported back after a submission is the combined all-time one - that
+  // is the number the result screen shows. Stage placements are read from the
+  // leaderboard endpoint when the player actually opens a stage board.
   const placement = outcome.valid
-    ? await placementOf(db, run.configVersion, runId, 'all', now)
+    ? await placementOf(db, run.configVersion, runId, 'total', 'all', now)
     : null;
 
   return {

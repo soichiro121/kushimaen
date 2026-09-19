@@ -1,8 +1,26 @@
+/*
+ * Stage boards. `grid-auto-flow: column` rather than a fixed column count, so
+ * registering a fourth mini-game widens this row instead of overflowing it.
+ */
+.scopeTabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+  margin: 16px 0 8px;
+}
+
+/* Smaller than the period tabs: four of these share one phone-width row. */
+.scopeTabs .tab {
+  font-size: 13px;
+  padding: 0 2px;
+}
+
 .tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin: 16px 0 12px;
+  margin: 0 0 12px;
 }
 
 .tab {

@@ -6,7 +6,11 @@
  * result says which source answered so the UI can label it honestly.
  */
 import { apiRequest, ApiError } from '@/services/api/http';
-import type { LeaderboardPeriod, LeaderboardResponse } from '@/services/api/types';
+import type {
+  LeaderboardPeriod,
+  LeaderboardResponse,
+  LeaderboardScope,
+} from '@/services/api/types';
 import { currentBackendMode, demoteToLocalMode } from '@/services/backendMode';
 import { localLeaderboard } from './localLeaderboard';
 
@@ -22,12 +26,13 @@ export interface LeaderboardResult {
 export const leaderboardService = {
   async fetch(
     period: LeaderboardPeriod,
-    options: { runId?: string; limit?: number } = {},
+    options: { runId?: string; limit?: number; scope?: LeaderboardScope } = {},
   ): Promise<LeaderboardResult> {
     const limit = options.limit ?? LEADERBOARD_PAGE_SIZE;
+    const scope = options.scope ?? 'total';
 
     if (currentBackendMode() === 'remote') {
-      const query = new URLSearchParams({ period, limit: String(limit) });
+      const query = new URLSearchParams({ period, limit: String(limit), stage: scope });
       if (options.runId) query.set('runId', options.runId);
       try {
         const data = await apiRequest<LeaderboardResponse>(`/leaderboard?${query.toString()}`);
@@ -38,7 +43,7 @@ export const leaderboardService = {
         if (error instanceof ApiError && error.isTransient) {
           demoteToLocalMode(message);
           return {
-            data: localLeaderboard.fetch(period, limit, options.runId),
+            data: localLeaderboard.fetch(period, limit, options.runId, scope),
             source: 'local',
             error: null,
           };
@@ -48,7 +53,7 @@ export const leaderboardService = {
     }
 
     return {
-      data: localLeaderboard.fetch(period, limit, options.runId),
+      data: localLeaderboard.fetch(period, limit, options.runId, scope),
       source: 'local',
       error: null,
     };

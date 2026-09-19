@@ -100,6 +100,14 @@ export interface StageModule {
   readonly id: StageId;
   /** Shown on the intro / result screens. */
   readonly label: string;
+  /**
+   * A few characters, for places where the full label will not fit - currently the
+   * leaderboard's stage tabs, where four of them share one phone-width row.
+   *
+   * Required rather than falling back to `label`, so adding a fifth mini-game asks
+   * the question up front instead of quietly breaking that row.
+   */
+  readonly shortLabel: string;
   readonly tagline: string;
   /** One line per rule, shown on the stage intro screen. */
   readonly rules: readonly string[];

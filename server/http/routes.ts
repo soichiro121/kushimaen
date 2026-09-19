@@ -7,7 +7,7 @@
  * to another host later is a matter of re-pointing the thin files.
  */
 import { isRunId } from '../domain/run.js';
-import { board, parseLimit, parsePeriod } from '../service/leaderboardService.js';
+import { board, parseLimit, parsePeriod, parseScope } from '../service/leaderboardService.js';
 import { completeRun, createRun } from '../service/runService.js';
 import { parseSubmission } from '../validation/submissionRequest.js';
 import { ApiError } from './apiError.js';
@@ -76,6 +76,8 @@ export function leaderboardRoute(deps: RouteDeps = {}): Handler {
           await board(
             db,
             clock.now(),
+            // `stage` picks the board: `total` (the default) or one stage id.
+            parseScope(url.searchParams.get('stage')),
             parsePeriod(url.searchParams.get('period')),
             parseLimit(url.searchParams.get('limit')),
             isRunId(runId) ? runId : null,

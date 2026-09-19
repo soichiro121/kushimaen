@@ -189,3 +189,165 @@ describe('GET /api/leaderboard', () => {
     expect(result.entries[0]?.isMe).toBe(false);
   });
 });
+
+/**
+ * A submission with chosen metrics per stage, each stage's claimed score recomputed
+ * so the whole thing is accepted. Lets one player be excellent at one mini-game and
+ * mediocre at the rest, which is the only way to tell a stage board apart from a
+ * slice of the combined one.
+ */
+async function submitStages(
+  nickname: string,
+  overrides: Partial<Record<'late' | 'bread' | 'teacher', Record<string, number>>>,
+): Promise<string> {
+  const runId = await api.openRun();
+
+  const stages = validStages().map((stage) => {
+    const override = overrides[stage.stageId];
+    if (override === undefined) return stage;
+    const metrics = { ...stage.metrics, ...override };
+    return { ...stage, metrics, score: computeStageScore(stage.stageId, metrics) };
+  });
+
+  const body = await json<{ accepted: boolean }>(
+    await api.completeRun(runId, { nickname, stages, totalScore: 0 }),
+  );
+  expect(body.accepted, `fixture for ${nickname} was rejected`).toBe(true);
+
+  return runId;
+}
+
+const STRONG_LATE = { nearMissCount: 40, comboUnits: 40 };
+const WEAK_LATE = { nearMissCount: 1, comboUnits: 1 };
+// `timeRemainingSec` is capped against the stage's own duration (49s of a 90s
+// limit leaves at most 42), so a bigger number here is not a stronger run - it is
+// a rejected one.
+const STRONG_TEACHER = { checkpointsCompleted: 6, timeRemainingSec: 40 };
+const WEAK_TEACHER = { checkpointsCompleted: 2, timeRemainingSec: 1 };
+
+describe('GET /api/leaderboard?stage=...', () => {
+  it('ranks a stage board by that stage alone, not by the run total', async () => {
+    // Deliberately opposed: each is the other's mirror image.
+    await submitStages('はしる人', { late: STRONG_LATE, teacher: WEAK_TEACHER });
+    await submitStages('かくれる人', { late: WEAK_LATE, teacher: STRONG_TEACHER });
+
+    const late = await board('?period=all&stage=late');
+    const teacher = await board('?period=all&stage=teacher');
+
+    expect(late.entries.map((entry) => entry.nickname)).toEqual(['はしる人', 'かくれる人']);
+    expect(teacher.entries.map((entry) => entry.nickname)).toEqual(['かくれる人', 'はしる人']);
+    expect(late.scope).toBe('late');
+  });
+
+  it('shows a stage score, not the run total', async () => {
+    await submitStages('ひとり', {});
+
+    const total = await board('?period=all');
+    const late = await board('?period=all&stage=late');
+
+    expect(late.entries[0]?.score).toBeLessThan(total.entries[0]?.score ?? 0);
+    expect(late.entries[0]?.score).toBe(
+      computeStageScore('late', validStages()[0]!.metrics),
+    );
+  });
+
+  it('puts a specialist top of their stage while they sit last overall', async () => {
+    // Loses the other two stages badly, so the combined board buries them.
+    await submitStages('パン職人', { late: WEAK_LATE, teacher: WEAK_TEACHER });
+    // The clock is frozen, so without this both rows share a timestamp and the
+    // tie-break below has nothing to order them by.
+    api.clock.advanceSeconds(60);
+    await submitStages('そこそこ', {});
+
+    const total = await board('?period=all');
+    const bread = await board('?period=all&stage=bread');
+
+    expect(total.entries.at(-1)?.nickname).toBe('パン職人');
+    // Both played bread identically, so the tie-break puts the earlier one first -
+    // and that is the specialist, who would never surface on the combined board.
+    expect(bread.entries[0]?.nickname).toBe('パン職人');
+  });
+
+  it('keeps a rejected run off the stage boards as well', async () => {
+    await submitStages('しょうじき', {});
+
+    const runId = await api.openRun();
+    const stages = validStages().map((stage) => ({ ...stage, score: 999_999 }));
+    await api.completeRun(runId, { nickname: 'ずる', stages, totalScore: 999_999 });
+
+    const bread = await board('?period=all&stage=bread');
+
+    expect(bread.entries.map((entry) => entry.nickname)).toEqual(['しょうじき']);
+    expect(bread.total).toBe(1);
+  });
+
+  it('does not rank a stage result played under an older rule set', async () => {
+    await submitStages('いま', {});
+
+    const oldRun = '00000000-0000-4000-8000-0000000002d0';
+    await api.db.query(
+      `INSERT INTO runs (id, seed, config_version, started_at, expires_at, completed_at, status)
+       VALUES ($1, 1, $2, $3, $3, $3, 'completed')`,
+      [oldRun, RULES.configVersion - 1, api.clock.now()],
+    );
+    await api.db.query(
+      `INSERT INTO scores (run_id, nickname, total_score, created_at, valid, suspicion_score, config_version)
+       VALUES ($1, 'むかし', 999999, $2, 1, 0, $3)`,
+      [oldRun, api.clock.now(), RULES.configVersion - 1],
+    );
+    await api.db.query(
+      `INSERT INTO stage_results (run_id, stage_id, score, client_score, duration_ms, metrics_json)
+       VALUES ($1, 'late', 999999, 999999, 20000, '{}')`,
+      [oldRun],
+    );
+
+    const late = await board('?period=all&stage=late');
+
+    expect(late.entries.map((entry) => entry.nickname)).toEqual(['いま']);
+  });
+
+  it('gives the caller their placement on a stage board', async () => {
+    const mine = await submitStages('わたし', { late: WEAK_LATE });
+    for (let i = 0; i < 4; i++) await submitStages(`つよい${i}`, { late: STRONG_LATE });
+
+    const late = await board(`?period=all&stage=late&limit=2&runId=${mine}`);
+
+    expect(late.entries).toHaveLength(2);
+    expect(late.me?.nickname).toBe('わたし');
+    expect(late.me?.rank).toBe(5);
+  });
+
+  it('honours the daily boundary on a stage board', async () => {
+    await submitStages('きのう', { late: STRONG_LATE });
+    api.clock.advanceSeconds(2 * 24 * 60 * 60);
+    await submitStages('きょう', { late: WEAK_LATE });
+
+    expect((await board('?period=today&stage=late')).entries.map((e) => e.nickname)).toEqual([
+      'きょう',
+    ]);
+    expect((await board('?period=all&stage=late')).entries.map((e) => e.nickname)).toEqual([
+      'きのう',
+      'きょう',
+    ]);
+  });
+
+  it('falls back to the combined board for a stage that does not exist', async () => {
+    await submitStages('だれか', {});
+
+    const result = await board('?period=all&stage=kendo');
+
+    expect(result.scope).toBe('total');
+    expect(result.entries[0]?.score).toBe((await board('?period=all')).entries[0]?.score);
+  });
+
+  it('treats an injection attempt as an unknown stage rather than running it', async () => {
+    await submitStages('だれか', {});
+
+    const result = await board(
+      `?period=all&stage=${encodeURIComponent("late' OR 1=1--")}`,
+    );
+
+    expect(result.scope).toBe('total');
+    expect(result.entries).toHaveLength(1);
+  });
+});

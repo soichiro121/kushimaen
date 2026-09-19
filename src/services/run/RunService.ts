@@ -126,6 +126,8 @@ class LocalRunService implements RunService {
       nickname: payload.nickname,
       totalScore: outcome.totalScore,
       createdAt: new Date().toISOString(),
+      // Stored so LOCAL MODE has per-stage boards as well, not just the combined one.
+      stageScores: outcome.stageScores,
     });
 
     return {

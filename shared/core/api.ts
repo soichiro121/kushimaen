@@ -59,10 +59,24 @@ export interface CompleteRunResponse {
 
 export type LeaderboardPeriod = 'today' | 'all';
 
+/**
+ * Which score a board ranks: the run total, or one stage on its own.
+ *
+ * A stage board is not a slice of the total board. Someone who is unbeatable at the
+ * bread RTA but hopeless at stealth never appears near the top of the combined
+ * ranking, and a per-stage board is the only place that shows up.
+ */
+export type LeaderboardScope = 'total' | StageId;
+
 export interface LeaderboardEntry {
   rank: number;
   nickname: string;
-  totalScore: number;
+  /**
+   * The score this board ranks: the run total on the combined board, that stage's
+   * score on a stage board. Not named `totalScore`, because on a stage board it is
+   * not a total and a name that lies is how the wrong number gets displayed.
+   */
+  score: number;
   createdAt: string;
   /** True for the row belonging to the run that was just submitted. */
   isMe?: boolean;
@@ -70,6 +84,8 @@ export interface LeaderboardEntry {
 
 export interface LeaderboardResponse {
   period: LeaderboardPeriod;
+  /** Echoed back, so a client can tell which board it is looking at. */
+  scope: LeaderboardScope;
   entries: LeaderboardEntry[];
   /** The caller's own placement, even when outside the returned page. */
   me: LeaderboardEntry | null;
