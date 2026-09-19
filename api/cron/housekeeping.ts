@@ -13,10 +13,11 @@ import { database } from '../../server/db/neon.js';
 import { deleteExpiredRunsBefore } from '../../server/repository/runs.js';
 import { purgeRateLimitsBefore } from '../../server/repository/rateLimits.js';
 import { logger } from '../../server/support/logger.js';
+import { vercelFunction } from '../../server/http/vercel.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export default async function handler(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   const secret = optionalEnv('CRON_SECRET');
   const authorized =
     secret !== undefined && request.headers.get('authorization') === `Bearer ${secret}`;
@@ -36,3 +37,6 @@ export default async function handler(request: Request): Promise<Response> {
     headers: { 'Content-Type': 'application/json' },
   });
 }
+
+// `{ fetch }`, not a bare default export - see `server/http/vercel.ts`.
+export default vercelFunction(handler);
