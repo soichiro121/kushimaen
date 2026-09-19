@@ -11,7 +11,13 @@
  * distinguishable on the leaderboard. Nothing in this file may introduce a number that the
  * backend cannot see — if a value influences a score, it belongs in the JSON.
  */
-import currentRules from '../game-rules/v3.json';
+// The `with { type: 'json' }` is REQUIRED, not decoration. This package is
+// `"type": "module"`, so on the server Node loads this file as real ESM, and ESM
+// refuses a JSON import without the attribute (ERR_IMPORT_ATTRIBUTE_MISSING).
+// Without it every serverless function died at module load, the game read the dead
+// `/api/health` as "no server", and the only visible symptom was LOCAL MODE.
+// Vite inlines the JSON at build time, so the browser never sees the import at all.
+import currentRules from '../game-rules/v3.json' with { type: 'json' };
 
 export type StageId = 'late' | 'bread' | 'teacher';
 
