@@ -20,6 +20,7 @@ import {
   leaderboardService,
 } from '@/services/leaderboard/LeaderboardService';
 import { playableStages } from '@/game/stages';
+import { trackEvent } from '@/services/analytics';
 import { useRunStore } from '@/stores/runStore';
 import { Button } from '@/components/ui/Button';
 import { Screen, ScreenBody, ScreenFooter, ScreenTitle } from '@/components/ui/Screen';
@@ -70,6 +71,7 @@ export function LeaderboardScreen() {
       setSource(result.source);
       setError(result.error);
       setLoading(false);
+      trackEvent({ name: 'leaderboard_viewed', scope: targetScope, period: targetPeriod });
     },
     [session?.runId],
   );

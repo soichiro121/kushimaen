@@ -15,6 +15,7 @@ import { audioService } from '@/services/audio/AudioService';
 import { pauseGame, resumeGame } from '@/game/core/hostAccess';
 import { useRunStore } from '@/stores/runStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { Analytics } from '@/services/analytics';
 import { GameLayer } from './GameLayer';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DebugOverlay } from '@/components/dev/DebugOverlay';
@@ -97,6 +98,7 @@ export function App() {
       ) : null}
 
       <DebugOverlay />
+      <Analytics />
     </ErrorBoundary>
   );
 }

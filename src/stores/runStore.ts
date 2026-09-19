@@ -13,6 +13,7 @@ import type { StageModule, StageResult } from '@/game/core/stageTypes';
 import { runService, type RunSession } from '@/services/run/RunService';
 import type { CompleteRunResponse } from '@/services/api/types';
 import { ApiError } from '@/services/api/http';
+import { trackEvent } from '@/services/analytics';
 import { GAME_CONFIG } from '@/config/game';
 import { useSettingsStore } from './settingsStore';
 
@@ -178,6 +179,7 @@ type Getter = () => RunState;
 async function openRun(set: Setter, get: Getter): Promise<void> {
   try {
     const session = await runService.createRun();
+    trackEvent({ name: 'run_started', stageCount: get().stages().length });
     set({
       session,
       stageIndex: 0,
@@ -214,6 +216,11 @@ async function submitRun(set: Setter, get: Getter): Promise<void> {
       })),
       totalScore: get().clientTotalScore(),
     });
+    trackEvent({
+      name: 'run_submitted',
+      accepted: response.accepted,
+      totalScore: response.totalScore,
+    });
     set({
       submissionStatus: response.accepted ? 'done' : 'failed',
       submissionResponse: response,
@@ -222,6 +229,7 @@ async function submitRun(set: Setter, get: Getter): Promise<void> {
         : (response.notice ?? 'スコアが登録されませんでした'),
     });
   } catch (error) {
+    trackEvent({ name: 'run_submitted', accepted: false, totalScore: 0 });
     set({
       submissionStatus: 'failed',
       submissionError: error instanceof ApiError ? error.message : 'スコアの登録に失敗しました',

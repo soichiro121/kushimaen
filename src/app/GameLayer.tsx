@@ -15,6 +15,7 @@ import type { StageContext, StageDebugSnapshot, StageModule } from '@/game/core/
 import { createRng, deriveSeed } from '@/utils/rng';
 import { audioService } from '@/services/audio/AudioService';
 import { vibrate } from '@/services/haptics/haptics';
+import { trackEvent } from '@/services/analytics';
 import { GAME_CONFIG } from '@/config/game';
 import { useRunStore } from '@/stores/runStore';
 import { useDebugStore } from '@/stores/debugStore';
@@ -102,6 +103,10 @@ export function GameLayer({ visible, stage, seed, preloadBundles }: GameLayerPro
           },
           onComplete: ({ result, reason }) => {
             if (reason === 'abort') return;
+            // Fired here rather than in the store because this is where the
+            // reason is; threading it through `completeStage` would widen that
+            // signature for analytics alone.
+            trackEvent({ name: 'stage_finished', stage: result.stageId, outcome: reason });
             completeStage(result);
           },
           onDebugSnapshot: GAME_CONFIG.debugOverlay

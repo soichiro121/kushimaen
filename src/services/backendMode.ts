@@ -13,11 +13,15 @@
  * real leaderboard and never be told why.
  */
 import { apiRequest, ApiError } from './api/http';
+import { trackEvent } from './analytics';
 import type { HealthResponse } from './api/types';
 
 export type BackendMode = 'remote' | 'local';
 
 let resolved: BackendMode | null = null;
+/** So the mode is reported once per session, not once per probe. */
+let reported = false;
+
 /** When the last failed probe happened, so a retry is allowed after a short wait. */
 let lastFailureAt = 0;
 let probe: Promise<BackendMode> | null = null;
@@ -30,6 +34,22 @@ const PROBE_TIMEOUT_MS = 5000;
 
 /** How long a failure is trusted before the next call is allowed to probe again. */
 const FAILURE_TTL_MS = 4000;
+
+/**
+ * Reports which mode the session ended up in, once.
+ *
+ * This exists because of a real outage: a broken `/api/health` put every player
+ * into LOCAL MODE, the game looked completely normal, and nothing anywhere said
+ * so. A rising `local` share is the signal that was missing.
+ *
+ * Only the FIRST resolution is reported. A later `demoteToLocalMode` is not a
+ * second session, and counting it as one would make the ratio meaningless.
+ */
+function reportMode(mode: BackendMode): void {
+  if (reported) return;
+  reported = true;
+  trackEvent({ name: 'backend_mode', mode });
+}
 
 export function currentBackendMode(): BackendMode {
   return resolved ?? 'local';
@@ -77,13 +97,29 @@ export async function detectBackendMode(force = false): Promise<BackendMode> {
       const health = await apiRequest<HealthResponse>('/health', {
         timeoutMs: PROBE_TIMEOUT_MS,
       });
-      if (health?.status === 'ok') {
+      if (health?.status === 'ok' && health.checks?.database !== 'unconfigured') {
         resolved = 'remote';
+        reportMode('remote');
         return 'remote';
       }
       resolved = 'local';
       lastFailureAt = Date.now();
-      console.info('[backend] LOCAL MODE: /api/health did not report ok');
+
+      /*
+       * A deployment with no DATABASE_URL is alive but cannot record anything.
+       * Without this check the game would run in remote mode, look perfectly
+       * normal, and only fail at the moment the player submits - after a whole
+       * run. Better to say LOCAL MODE on the title screen and mean it.
+       *
+       * Note this is NOT the same as "the database did not answer": health never
+       * connects, so a momentary database problem still leaves the game in remote
+       * mode, where the individual call falls back on its own.
+       */
+      console.info(
+        health?.checks?.database === 'unconfigured'
+          ? '[backend] LOCAL MODE: the deployment has no DATABASE_URL set'
+          : '[backend] LOCAL MODE: /api/health did not report ok',
+      );
     } catch (error) {
       resolved = 'local';
       lastFailureAt = Date.now();
@@ -93,6 +129,7 @@ export async function detectBackendMode(force = false): Promise<BackendMode> {
     } finally {
       probe = null;
     }
+    reportMode('local');
     return 'local';
   })();
 
@@ -116,4 +153,5 @@ export function resetBackendMode(mode: BackendMode | null = null): void {
   resolved = mode;
   lastFailureAt = 0;
   probe = null;
+  reported = false;
 }
