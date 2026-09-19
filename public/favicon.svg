@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="KOMATO RUSH">
+  <rect width="32" height="32" rx="7" fill="#2f3d63"/>
+  <rect x="9" y="4" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="21" y="4" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="7" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="18" y="7" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="10" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="15" y="10" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="13" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="12" y="13" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="16" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="15" y="16" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="19" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="18" y="19" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="22" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="21" y="22" width="3" height="3" fill="#f6f1e6"/>
+  <rect x="9" y="26" width="15" height="2" fill="#f2a03d"/>
+</svg>

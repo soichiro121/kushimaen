@@ -48,6 +48,16 @@ const GLYPHS = {
   ' ': '00000,00000,00000,00000,00000,00000,00000',
 };
 
+/**
+ * A glyph as an array of rows of booleans, for callers that need the shape itself
+ * rather than pixels on a canvas - the site icons draw the same letter as SVG rects
+ * so it stays crisp at any size.
+ */
+export function glyphCells(char) {
+  const glyph = GLYPHS[char.toUpperCase()] ?? GLYPHS['?'];
+  return glyph.split(',').map((row) => [...row].map((cell) => cell === '1'));
+}
+
 export const GLYPH_WIDTH = 5;
 export const GLYPH_HEIGHT = 7;
 

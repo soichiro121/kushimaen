@@ -19,6 +19,7 @@ import { Canvas, hex } from './lib/raster.mjs';
 import { drawTextCentered } from './lib/font.mjs';
 import { createBuffer, encodeWav, makeSeamless, normalize, note, renderVoice } from './lib/wav.mjs';
 import { SOURCE_OUTPUTS } from './lib/source-assets.mjs';
+import { BRAND } from './lib/brand.mjs';
 
 // ---------------------------------------------------------------------------
 // Deterministic randomness (so `git status` stays clean between regenerations)
@@ -69,21 +70,21 @@ function spritesheet(relativePath, frameWidth, frameHeight, frameCount, drawFram
 // Palette - a muted school-life palette, slightly comical, easy to read on a phone
 // ---------------------------------------------------------------------------
 const C = {
-  ink: hex('#22262e'),
+  ink: hex(BRAND.ink),
   inkSoft: hex('#3a4150'),
-  paper: hex('#f6f1e6'),
+  paper: hex(BRAND.paper),
   skin: hex('#f3d2ae'),
   skinShade: hex('#e0b98f'),
-  navy: hex('#2f3d63'),
-  navyLight: hex('#435480'),
+  navy: hex(BRAND.navy),
+  navyLight: hex(BRAND.navyLight),
   blazer: hex('#37456e'),
   blazerAlt: hex('#4a3a63'),
   slacks: hex('#2b3040'),
   hair: hex('#2a2320'),
   hairAlt: hex('#4a3524'),
   shirt: hex('#f7f7f2'),
-  accent: hex('#f2a03d'),
-  accentDeep: hex('#d9761f'),
+  accent: hex(BRAND.accent),
+  accentDeep: hex(BRAND.accentDeep),
   danger: hex('#d9483b'),
   good: hex('#43a06a'),
   asphalt: hex('#6f7278'),
@@ -276,7 +277,8 @@ function buildCommon() {
     drawTextCentered(c, 'KOMATO', 360, 104, C.paper, 9);
     drawTextCentered(c, 'RUSH', 360, 176, C.accent, 9);
     c.rect(220, 250, 280, 6, ALPHA(C.accent, 200));
-    stampPlaceholder(c, 'PLACEHOLDER LOGO', ALPHA(C.paper, 150));
+    // No placeholder caption here: this is on the title screen, in front of
+    // players, not on the /dev/assets sheet. The other stamps stay.
     emitPng('common/ui-logo.png', c);
   }
 

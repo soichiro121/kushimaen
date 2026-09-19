@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "assets:placeholders": "node scripts/generate-placeholders.mjs",
     "assets:source": "node scripts/process-source-assets.mjs",
+    "assets:icons": "node scripts/generate-icons.mjs",
     "assets:docs": "vite-node scripts/generate-asset-docs.ts",
     "balance": "vite-node scripts/balance-report.ts",
     "typecheck": "tsc -b",
@@ -25,7 +26,7 @@
     "check:functions": "node scripts/check-functions.mjs",
     "db:migrate": "vite-node scripts/db-migrate.ts",
     "dev:api": "vercel dev",
-    "assets": "npm run assets:placeholders && npm run assets:source && npm run assets:docs"
+    "assets": "npm run assets:placeholders && npm run assets:source && npm run assets:icons && npm run assets:docs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

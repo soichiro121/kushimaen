@@ -19,6 +19,17 @@
     <meta name="description" content="駒場東邦をモチーフにしたスマホ向けミニゲーム集" />
     <meta name="format-detection" content="telephone=no" />
 
+    <!--
+      Icons. The SVG is listed first and wins wherever it is supported; the PNG is
+      there for browsers that do not. Static files are matched before the SPA
+      rewrite in vercel.json, so these are served as themselves rather than as
+      index.html. All of them are generated - see scripts/generate-icons.mjs.
+    -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <!-- Home-screen / standalone behaviour on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
