@@ -21,7 +21,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,css,json,md}\"",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run check:functions && npm run build",
+    "check:functions": "node scripts/check-functions.mjs",
     "db:migrate": "vite-node scripts/db-migrate.ts",
     "dev:api": "vercel dev",
     "assets": "npm run assets:placeholders && npm run assets:source && npm run assets:docs"

@@ -100,12 +100,34 @@ CORSの面が消えます。
 ## 4. 動作確認
 
 ```bash
-curl -s https://<あなたのドメイン>/api/health
-# {"status":"ok","configVersion":3,"serverTime":"..."}
+curl -i https://<あなたのドメイン>/api/health
+# {"status":"ok","configVersion":3,"serverTime":"...","checks":{"database":"configured"}}
 ```
 
-`configVersion` が `shared/game-rules/` の現行バージョンと一致していることを確認します。
-ずれていると、クライアントは `config_version_mismatch` で弾かれます。
+見るところが3つあります。
+
+| 項目 | 期待値 | ずれていたら |
+| --- | --- | --- |
+| HTTP status | `200` | 下の「うまくいかないとき」へ |
+| `configVersion` | `shared/game-rules/` の現行バージョン | クライアントが `config_version_mismatch` で弾かれます |
+| `checks.database` | `configured` | `DATABASE_URL` が未設定。3-2 をやり直して**再デプロイ** |
+
+`checks.database` は環境変数が入っているかだけを見ます。接続はしません（health が
+DB の状態で落ちてはいけないため）。実際に繋がるかは下のプレイ確認で見ます。
+
+### うまくいかないとき
+
+`/api/health` が `500`（`FUNCTION_INVOCATION_FAILED`）を返す場合、関数が**読み込みに
+失敗**しています。ほぼ必ず、Vite では通るが Node の ESM では通らない書き方が混ざった
+ときです。ローカルで再現できます。
+
+```bash
+npm run check:functions
+```
+
+これは `api/` を Node と同じモジュール設定でコンパイルし、Vite を通さずに素の Node で
+読み込んで `/api/health` を実際に呼びます。**テストでは捕まりません** — Vitest は Vite
+の変換を通るので、両者が食い違う書き方はすり抜けます。
 
 ブラウザで開いて1プレイし、ランキングに載ることを確認してください。API に到達できない
 場合、ゲームは黙って **LOCAL MODE** に落ちて localStorage にスコアを貯めます。つまり
