@@ -1,6 +1,9 @@
 /**
  * STAGE 2 - 羽沢パン購入RTA: product catalogue and tuning.
  *
+ * "パン" is the stage's name, not a restriction - the shop sells onigiri too, and
+ * three nearly identical onigiri are the single best look-alike family in here.
+ *
  * ADDING A NEW BREAD (no gameplay code changes):
  *   1. Put the image in `public/assets/bread/` and add it to `assetManifest.ts`
  *      under `bread.item.<id>`.
@@ -15,7 +18,8 @@ import type { AssetId } from '@/assets/assetRegistry';
  * deliberately fill the shelf with same-family items, which is what turns the stage
  * from "find the picture" into a real reading-speed challenge.
  */
-export type BreadFamily = 'curry' | 'melon' | 'an' | 'sandwich' | 'long' | 'sweet' | 'savory';
+export type BreadFamily =
+  'curry' | 'melon' | 'an' | 'sandwich' | 'long' | 'sweet' | 'savory' | 'onigiri';
 
 export interface BreadItem {
   readonly id: string;
@@ -172,6 +176,49 @@ export const BREAD_ITEMS: readonly BreadItem[] = [
     family: 'savory',
     tags: ['惣菜'],
     difficulty: 1,
+  },
+  // -- 実写素材が入っている商品 ------------------------------------------
+  // おにぎり3種は見た目がほぼ同じなので、それ自体が「読ませる」難易度になります。
+  // 後半の問題で同じ family が棚に並ぶ仕組みと噛み合う、いちばん強い組み合わせです。
+  {
+    id: 'chocoRoll',
+    name: 'チョコホイップロールケーキ',
+    assetId: 'bread.item.chocoRoll',
+    family: 'sweet',
+    tags: ['菓子パン', 'チョコ', 'クリーム'],
+    difficulty: 2,
+  },
+  {
+    id: 'sausageRoll',
+    name: 'まるごとソーセージ',
+    assetId: 'bread.item.sausageRoll',
+    family: 'long',
+    tags: ['惣菜', '細長い'],
+    difficulty: 1,
+  },
+  {
+    id: 'onigiriTuna',
+    name: 'ツナマヨおにぎり',
+    assetId: 'bread.item.onigiriTuna',
+    family: 'onigiri',
+    tags: ['おにぎり', '海苔'],
+    difficulty: 3,
+  },
+  {
+    id: 'onigiriUme',
+    name: '梅おかかおにぎり',
+    assetId: 'bread.item.onigiriUme',
+    family: 'onigiri',
+    tags: ['おにぎり', '海苔', '和'],
+    difficulty: 3,
+  },
+  {
+    id: 'onigiriSalmon',
+    name: '紅しゃけおにぎり',
+    assetId: 'bread.item.onigiriSalmon',
+    family: 'onigiri',
+    tags: ['おにぎり', '海苔'],
+    difficulty: 3,
   },
 ];
 

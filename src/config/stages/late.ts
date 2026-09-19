@@ -66,7 +66,15 @@ export const lateConfig = {
   player: {
     /** Vertical position as a fraction of the viewport height. */
     yRatio: 0.76,
-    displayWidth: 76,
+    /**
+     * On-screen width in px; the height follows the artwork's aspect ratio.
+     *
+     * The player is a photograph of a real person (tall and narrow) while the other
+     * students are still chibi placeholders (short and wide). 56 puts the runner at
+     * roughly 145px tall - clearly the nearest figure to the camera, without dwarfing
+     * the crowd. Revisit it when the students get real artwork too.
+     */
+    displayWidth: 56,
     /**
      * Finger travel is multiplied by this. The character follows the *delta* of the
      * drag, never the absolute finger position, so it is never hidden under the thumb.

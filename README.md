@@ -88,7 +88,9 @@ vercel dev
 | `npm run typecheck`           | 型チェック（strict）                           |
 | `npm run lint`                | ESLint                                         |
 | `npm run verify`              | lint → typecheck → test → build をまとめて実行 |
-| `npm run assets:placeholders` | 仮素材（画像・音声）を再生成                   |
+| `npm run assets`              | 素材をすべて再生成（仮素材 → 実写 → 一覧表）   |
+| `npm run assets:placeholders` | 仮素材（画像・音声）のみ再生成                 |
+| `npm run assets:source`       | `assets-src/` の写真を白抜きして書き出し       |
 | `npm run assets:docs`         | [docs/ASSETS.md](docs/ASSETS.md) を再生成      |
 | `npm run balance`             | スコアバランスをシミュレートして分布を出力     |
 | `vercel dev`                  | ゲームと API を同じポートで起動                |

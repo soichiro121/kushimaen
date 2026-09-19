@@ -200,11 +200,15 @@ Phaser インスタンスは `GameLayer` が**セッション中ずっと保持*
 │   ├── utils/                  乱数・safe area・ニックネーム・カウントアップ
 │   └── dev/                    /dev と /dev/assets（開発ビルドのみ）
 │
+├── assets-src/                 実写素材の元画像（白背景）
+│   └── *.jpg                   npm run assets:source で public/assets/ へ
+│
 ├── public/assets/              ★ 差し替え対象のファイル群
 │   ├── common/  late/  bread/  teacher/
 │
 ├── scripts/                    ビルド時ツール（本番では動きません）
-│   ├── generate-placeholders.mjs   仮素材の生成（決定論的）
+│   ├── generate-placeholders.mjs   仮素材の生成（決定論的・実写は上書きしない）
+│   ├── process-source-assets.mjs   写真の背景白抜き・切り出し・コマ合成
 │   ├── generate-asset-docs.ts      ASSETS.md の生成
 │   └── lib/                        PNG/WAV エンコーダ
 │

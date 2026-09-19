@@ -93,6 +93,25 @@ function build(): string {
   );
   lines.push('4. `npm run assets:docs` を実行してこの表を更新します。');
   lines.push('');
+  lines.push('### 方法A2: 写真から作る（背景の白抜きを自動でやります）');
+  lines.push('');
+  lines.push('商品や人物の**写真**を渡す場合は、白背景で撮った元画像を `assets-src/` に');
+  lines.push('置いて、テーブルを1行足すだけです。');
+  lines.push('');
+  lines.push('```bash');
+  lines.push('cp 新しい写真.jpg assets-src/bread-anpan.jpg');
+  lines.push('# scripts/lib/source-assets.mjs に1行追加してから');
+  lines.push('npm run assets:source');
+  lines.push('```');
+  lines.push('');
+  lines.push('背景の白は**画像の縁から繋がっている部分だけ**が消えます。パッケージに');
+  lines.push('印刷された白いラベルは囲まれているので穴が空きません。切り抜きの縁は');
+  lines.push('ぼかされ、被写体の色をにじませてあるので白フチも出ません。');
+  lines.push('');
+  lines.push('元画像はリポジトリに残るので、サイズを変えたくなったら再生成できます。');
+  lines.push('`npm run assets:placeholders` は**写真由来のファイルを上書きしません**。');
+  lines.push('');
+
   lines.push('### 方法B: 別のファイル名・別の形式にする');
   lines.push('');
   lines.push(
@@ -121,6 +140,7 @@ function build(): string {
   lines.push('## 確認方法');
   lines.push('');
   lines.push('```bash');
+  lines.push('npm run assets   # 仮素材 → 写真 → この表、をまとめて再生成');
   lines.push('npm run dev');
   lines.push('```');
   lines.push('');

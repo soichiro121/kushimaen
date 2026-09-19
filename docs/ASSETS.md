@@ -3,7 +3,7 @@
 > **このファイルは自動生成です。** `npm run assets:docs` で再生成してください。
 > 元データは [`src/assets/assetManifest.ts`](../src/assets/assetManifest.ts) です。
 
-現在 **76** 件のアセットがあり、うち **75** 件が仮素材（TODO_ASSET）です。
+現在 **81** 件のアセットがあり、うち **72** 件が仮素材（TODO_ASSET）です。
 
 ## 差し替え方法（コードの知識は不要です）
 
@@ -15,6 +15,24 @@
 3. `src/assets/assetManifest.ts` の該当エントリで `status: 'placeholder'` を
    `status: 'final'` に変更します。サイズが変わった場合は推奨サイズの数値も直します。
 4. `npm run assets:docs` を実行してこの表を更新します。
+
+### 方法A2: 写真から作る（背景の白抜きを自動でやります）
+
+商品や人物の**写真**を渡す場合は、白背景で撮った元画像を `assets-src/` に
+置いて、テーブルを1行足すだけです。
+
+```bash
+cp 新しい写真.jpg assets-src/bread-anpan.jpg
+# scripts/lib/source-assets.mjs に1行追加してから
+npm run assets:source
+```
+
+背景の白は**画像の縁から繋がっている部分だけ**が消えます。パッケージに
+印刷された白いラベルは囲まれているので穴が空きません。切り抜きの縁は
+ぼかされ、被写体の色をにじませてあるので白フチも出ません。
+
+元画像はリポジトリに残るので、サイズを変えたくなったら再生成できます。
+`npm run assets:placeholders` は**写真由来のファイルを上書きしません**。
 
 ### 方法B: 別のファイル名・別の形式にする
 
@@ -39,6 +57,7 @@ late: {
 ## 確認方法
 
 ```bash
+npm run assets   # 仮素材 → 写真 → この表、をまとめて再生成
 npm run dev
 ```
 
@@ -83,15 +102,15 @@ npm run dev
 
 ## ステージ1: 遅刻回避
 
-17 件（仮素材 17 件）
+17 件（仮素材 15 件）
 
 | Asset ID | 用途 | 現在のファイル | 実サイズ | 必要な仕様 | 状態 |
 | --- | --- | --- | --- | --- | --- |
 | `late.background.privateRoad` | 私道の背景。縦方向にシームレスタイリングします | `/assets/late/bg-private-road.png` | 720x1280 | 720x1280 / 透過不要 | **TODO_ASSET** |
 | `late.background.gate` | ゴール地点の校門 | `/assets/late/bg-gate.png` | 720x420 | 720x420 / 透過必須 | **TODO_ASSET** |
 | `late.prop.roadside` | 道の左右に並ぶ塀・植え込み | `/assets/late/prop-roadside.png` | 96x200 | 96x200 / 透過必須 | **TODO_ASSET** |
-| `late.player.run` | 主人公の走行アニメーション | `/assets/late/player-run.png` | 768x160 | 6 frames x 128x160 / 横一列 / 12fps / ループ / 透過必須 | **TODO_ASSET** |
-| `late.player.hit` | 生徒に衝突した瞬間のリアクション | `/assets/late/player-hit.png` | 256x160 | 2 frames x 128x160 / 横一列 / 10fps / 単発 / 透過必須 | **TODO_ASSET** |
+| `late.player.run` | 主人公の走行アニメーション（後ろ姿） | `/assets/late/player-run.png` | 480x208 | 6 frames x 80x208 / 横一列 / 12fps / ループ / 透過必須 | final |
+| `late.player.hit` | 生徒に衝突した瞬間のリアクション（後ろ姿） | `/assets/late/player-hit.png` | 160x208 | 2 frames x 80x208 / 横一列 / 10fps / 単発 / 透過必須 | final |
 | `late.student.normal01` | 普通に歩く生徒A | `/assets/late/student-normal01.png` | 448x150 | 4 frames x 112x150 / 横一列 / 6fps / ループ / 透過必須 | **TODO_ASSET** |
 | `late.student.normal02` | 普通に歩く生徒B（配色違い） | `/assets/late/student-normal02.png` | 448x150 | 4 frames x 112x150 / 横一列 / 6fps / ループ / 透過必須 | **TODO_ASSET** |
 | `late.student.hurry` | 小走りする生徒 | `/assets/late/student-hurry.png` | 448x150 | 4 frames x 112x150 / 横一列 / 11fps / ループ / 透過必須 | **TODO_ASSET** |
@@ -108,11 +127,12 @@ npm run dev
 ### 制作上の注意
 
 - `late.background.privateRoad` … 【重要】上端と下端が繋がるように作ってください（縦ループ）。
-- `late.player.run` … 横一列のスプライトシート。足元が frame 下端に来るように。
+- `late.player.run` … 実写1枚から合成した切り絵アニメ（上下の揺れ＋左右の振り）です。本物の走行コマが撮れたら assets-src/late-player.jpg を差し替えるのではなく、コマを並べた画像を直接ここへ。足元が frame 下端に来るように。
+- `late.player.hit` … 実写1枚から合成。2コマ目でよろけます。
 
 ## ステージ2: 羽沢パン購入RTA
 
-26 件（仮素材 26 件）
+31 件（仮素材 25 件）
 
 | Asset ID | 用途 | 現在のファイル | 実サイズ | 必要な仕様 | 状態 |
 | --- | --- | --- | --- | --- | --- |
@@ -121,7 +141,7 @@ npm run dev
 | `bread.ui.tag` | 注文表示パネルの背景 | `/assets/bread/ui-tag.png` | 640x160 | 640x160 / 透過必須 | **TODO_ASSET** |
 | `bread.item.curry` | 商品画像: カレーパン | `/assets/bread/item-curry.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
 | `bread.item.curryHot` | 商品画像: 辛口カレーパン | `/assets/bread/item-curry-hot.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
-| `bread.item.melon` | 商品画像: メロンパン | `/assets/bread/item-melon.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
+| `bread.item.melon` | 商品画像: メロンパン | `/assets/bread/item-melon.png` | 192x192 | 192x192 / 透過必須 | final |
 | `bread.item.melonWhip` | 商品画像: ホイップメロンパン | `/assets/bread/item-melon-whip.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
 | `bread.item.an` | 商品画像: あんパン | `/assets/bread/item-an.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
 | `bread.item.anUguisu` | 商品画像: うぐいすあんパン | `/assets/bread/item-an-uguisu.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
@@ -137,6 +157,11 @@ npm run dev
 | `bread.item.pizza` | 商品画像: ピザパン | `/assets/bread/item-pizza.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
 | `bread.item.sugarTwist` | 商品画像: シュガーツイスト | `/assets/bread/item-sugar-twist.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
 | `bread.item.milkFrance` | 商品画像: ミルクフランス | `/assets/bread/item-milk-france.png` | 192x192 | 192x192 / 透過必須 | **TODO_ASSET** |
+| `bread.item.chocoRoll` | 商品画像: チョコホイップロールケーキ | `/assets/bread/item-choco-roll.png` | 192x192 | 192x192 / 透過必須 | final |
+| `bread.item.sausageRoll` | 商品画像: まるごとソーセージ | `/assets/bread/item-sausage-roll.png` | 192x192 | 192x192 / 透過必須 | final |
+| `bread.item.onigiriTuna` | 商品画像: ツナマヨおにぎり | `/assets/bread/item-onigiri-tuna.png` | 192x192 | 192x192 / 透過必須 | final |
+| `bread.item.onigiriUme` | 商品画像: 梅おかかおにぎり | `/assets/bread/item-onigiri-ume.png` | 192x192 | 192x192 / 透過必須 | final |
+| `bread.item.onigiriSalmon` | 商品画像: 紅しゃけおにぎり | `/assets/bread/item-onigiri-salmon.png` | 192x192 | 192x192 / 透過必須 | final |
 | `bread.se.correct` | 正解時のピンポン音 | `/assets/bread/se-correct.wav` | - | SE / 約0.3秒 | **TODO_ASSET** |
 | `bread.se.wrong` | 誤答時のブブー音 | `/assets/bread/se-wrong.wav` | - | SE / 約0.35秒 | **TODO_ASSET** |
 | `bread.se.order` | 新しい注文が出たときの通知音 | `/assets/bread/se-order.wav` | - | SE / 約0.25秒 | **TODO_ASSET** |
@@ -147,7 +172,7 @@ npm run dev
 
 - `bread.item.curry` … 正方形・背景透過。中央に商品が収まるように。
 - `bread.item.curryHot` … 正方形・背景透過。中央に商品が収まるように。
-- `bread.item.melon` … 正方形・背景透過。中央に商品が収まるように。
+- `bread.item.melon` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
 - `bread.item.melonWhip` … 正方形・背景透過。中央に商品が収まるように。
 - `bread.item.an` … 正方形・背景透過。中央に商品が収まるように。
 - `bread.item.anUguisu` … 正方形・背景透過。中央に商品が収まるように。
@@ -163,6 +188,11 @@ npm run dev
 - `bread.item.pizza` … 正方形・背景透過。中央に商品が収まるように。
 - `bread.item.sugarTwist` … 正方形・背景透過。中央に商品が収まるように。
 - `bread.item.milkFrance` … 正方形・背景透過。中央に商品が収まるように。
+- `bread.item.chocoRoll` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
+- `bread.item.sausageRoll` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
+- `bread.item.onigiriTuna` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
+- `bread.item.onigiriUme` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
+- `bread.item.onigiriSalmon` … 実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。
 
 ## ステージ3: 放課後ステルス（見下ろし2D）
 
@@ -249,7 +279,7 @@ src/config/stages/teacher/maps/
 
 `family` が同じ商品は「見分けにくい商品」として後半の問題に混ぜられます。
 
-現在の商品は 18 種類です。
+現在の商品は 23 種類です。
 
 | id | 商品名 | Asset ID | family | 難易度 |
 | --- | --- | --- | --- | --- |
@@ -271,6 +301,11 @@ src/config/stages/teacher/maps/
 | `tamagoSand` | たまごサンド | `bread.item.tamagoSand` | sandwich | 2 |
 | `hamCheese` | ハムチーズサンド | `bread.item.hamCheese` | sandwich | 3 |
 | `pizza` | ピザパン | `bread.item.pizza` | savory | 1 |
+| `chocoRoll` | チョコホイップロールケーキ | `bread.item.chocoRoll` | sweet | 2 |
+| `sausageRoll` | まるごとソーセージ | `bread.item.sausageRoll` | long | 1 |
+| `onigiriTuna` | ツナマヨおにぎり | `bread.item.onigiriTuna` | onigiri | 3 |
+| `onigiriUme` | 梅おかかおにぎり | `bread.item.onigiriUme` | onigiri | 3 |
+| `onigiriSalmon` | 紅しゃけおにぎり | `bread.item.onigiriSalmon` | onigiri | 3 |
 
 ## 本番用の書き出し設定
 

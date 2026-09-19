@@ -17,7 +17,10 @@
  */
 import { bgm, img, sfx, sheet } from './define';
 
-/** Keeps the 18 bread entries below to one readable line each. */
+/**
+ * A product still waiting for real artwork.
+ * Keeps the bread entries below to one readable line each.
+ */
 function breadImage(file: string, label: string) {
   return {
     src: `/assets/bread/${file}.png`,
@@ -26,6 +29,24 @@ function breadImage(file: string, label: string) {
     recommendedSize: { width: 192, height: 192 },
     transparent: true,
     notes: '正方形・背景透過。中央に商品が収まるように。',
+  } as const;
+}
+
+/**
+ * A product whose photograph is already in `assets-src/`.
+ *
+ * The PNG is derived by `npm run assets:source`, not hand-edited: it flood-fills the
+ * white studio background inward from the border, so the white labels printed on each
+ * wrapper survive. Re-shoot the product, drop the new photo in, run the command.
+ */
+function breadPhoto(file: string, label: string) {
+  return {
+    src: `/assets/bread/${file}.png`,
+    status: 'final',
+    usage: `商品画像: ${label}`,
+    recommendedSize: { width: 192, height: 192 },
+    transparent: true,
+    notes: `実写。元画像は assets-src/ にあり、npm run assets:source で生成されます。`,
   } as const;
 }
 
@@ -146,24 +167,28 @@ export const assetManifest = {
     player: {
       run: sheet({
         src: '/assets/late/player-run.png',
-        status: 'placeholder',
-        usage: '主人公の走行アニメーション',
-        frameSize: { width: 128, height: 160 },
+        status: 'final',
+        usage: '主人公の走行アニメーション（後ろ姿）',
+        frameSize: { width: 80, height: 208 },
         frameCount: 6,
         frameRate: 12,
         loop: true,
         transparent: true,
-        notes: '横一列のスプライトシート。足元が frame 下端に来るように。',
+        notes:
+          '実写1枚から合成した切り絵アニメ（上下の揺れ＋左右の振り）です。本物の走行コマが' +
+          '撮れたら assets-src/late-player.jpg を差し替えるのではなく、コマを並べた画像を' +
+          '直接ここへ。足元が frame 下端に来るように。',
       }),
       hit: sheet({
         src: '/assets/late/player-hit.png',
-        status: 'placeholder',
-        usage: '生徒に衝突した瞬間のリアクション',
-        frameSize: { width: 128, height: 160 },
+        status: 'final',
+        usage: '生徒に衝突した瞬間のリアクション（後ろ姿）',
+        frameSize: { width: 80, height: 208 },
         frameCount: 2,
         frameRate: 10,
         loop: false,
         transparent: true,
+        notes: '実写1枚から合成。2コマ目でよろけます。',
       }),
     },
     student: {
@@ -302,7 +327,7 @@ export const assetManifest = {
     item: {
       curry: img(breadImage('item-curry', 'カレーパン')),
       curryHot: img(breadImage('item-curry-hot', '辛口カレーパン')),
-      melon: img(breadImage('item-melon', 'メロンパン')),
+      melon: img(breadPhoto('item-melon', 'メロンパン')),
       melonWhip: img(breadImage('item-melon-whip', 'ホイップメロンパン')),
       an: img(breadImage('item-an', 'あんパン')),
       anUguisu: img(breadImage('item-an-uguisu', 'うぐいすあんパン')),
@@ -318,6 +343,13 @@ export const assetManifest = {
       pizza: img(breadImage('item-pizza', 'ピザパン')),
       sugarTwist: img(breadImage('item-sugar-twist', 'シュガーツイスト')),
       milkFrance: img(breadImage('item-milk-france', 'ミルクフランス')),
+
+      // -- 実写素材が入っているもの --------------------------------------
+      chocoRoll: img(breadPhoto('item-choco-roll', 'チョコホイップロールケーキ')),
+      sausageRoll: img(breadPhoto('item-sausage-roll', 'まるごとソーセージ')),
+      onigiriTuna: img(breadPhoto('item-onigiri-tuna', 'ツナマヨおにぎり')),
+      onigiriUme: img(breadPhoto('item-onigiri-ume', '梅おかかおにぎり')),
+      onigiriSalmon: img(breadPhoto('item-onigiri-salmon', '紅しゃけおにぎり')),
     },
     se: {
       correct: sfx({

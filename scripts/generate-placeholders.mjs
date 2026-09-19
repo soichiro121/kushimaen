@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { Canvas, hex } from './lib/raster.mjs';
 import { drawTextCentered } from './lib/font.mjs';
 import { createBuffer, encodeWav, makeSeamless, normalize, note, renderVoice } from './lib/wav.mjs';
+import { SOURCE_OUTPUTS } from './lib/source-assets.mjs';
 
 // ---------------------------------------------------------------------------
 // Deterministic randomness (so `git status` stays clean between regenerations)
@@ -34,7 +35,15 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'public', 'assets');
 
 let written = 0;
+let skipped = 0;
 function emit(relativePath, buffer) {
+  // Never overwrite an asset built from a real photograph. Those are produced by
+  // `npm run assets:source` and would otherwise be destroyed by a routine
+  // regeneration of the placeholder art.
+  if (SOURCE_OUTPUTS.has(relativePath)) {
+    skipped += 1;
+    return;
+  }
   const target = join(OUT, relativePath);
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, buffer);
@@ -1456,4 +1465,7 @@ buildCommon();
 buildLate();
 buildBread();
 buildTeacher();
-console.info(`[placeholders] wrote ${written} files to public/assets/`);
+console.info(
+  `[placeholders] wrote ${written} files to public/assets/` +
+    (skipped > 0 ? ` (kept ${skipped} real asset${skipped === 1 ? '' : 's'})` : ''),
+);
