@@ -16,12 +16,26 @@
  *   body              -> size-limited, strictly parsed JSON
  */
 import { CONFIG, isProduction } from '../config/env.js';
-import { database } from '../db/neon.js';
 import { hitRateLimit } from '../repository/rateLimits.js';
 import { ApiError, isApiError } from './apiError.js';
+import { applyCors, json, securityHeaders } from './headers.js';
 import { logger } from '../support/logger.js';
 import { systemClock, type Clock } from '../support/clock.js';
 import type { Database } from '../db/types.js';
+
+export { json } from './headers.js';
+
+/**
+ * The database driver is loaded on FIRST USE, not at module load.
+ *
+ * `server/db/neon.ts` wires up a WebSocket implementation at its top level, so a
+ * static import would make every route - including ones that never touch Postgres -
+ * fail to start if that driver could not be loaded.
+ */
+async function defaultDatabase(): Promise<Database> {
+  const { database } = await import('../db/neon.js');
+  return database();
+}
 
 export interface RouteContext {
   readonly request: Request;
@@ -40,46 +54,6 @@ export interface RouteOptions {
 }
 
 export type Handler = (request: Request) => Promise<Response>;
-
-export function json(data: unknown, status = 200, headers: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', ...headers },
-  });
-}
-
-function securityHeaders(response: Response): Response {
-  // Set on the way out so they are present on error responses too.
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('Referrer-Policy', 'no-referrer');
-  // A leaderboard that is cached is a leaderboard that is wrong.
-  response.headers.set('Cache-Control', 'no-store');
-  return response;
-}
-
-/**
- * CORS.
- *
- * The frontend and the API are served from the SAME origin in the normal deployment,
- * so no CORS headers are needed at all and `CORS_ALLOWED_ORIGINS` stays empty. It
- * exists for the split deployment (frontend on one host, API on another), and it
- * echoes back only an origin that is explicitly on the list - never `*`.
- */
-function applyCors(request: Request, response: Response): Response {
-  const origin = request.headers.get('origin');
-  if (!origin) return response;
-
-  const allowed = CONFIG.corsAllowedOrigins();
-  if (!allowed.includes(origin)) return response;
-
-  response.headers.set('Access-Control-Allow-Origin', origin);
-  response.headers.set('Vary', 'Origin');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-  response.headers.set('Access-Control-Max-Age', '600');
-  return response;
-}
 
 /** Best-effort client identity for rate limiting. Hashed before it is stored. */
 function clientBucket(request: Request): string {
@@ -123,7 +97,7 @@ export function createRoute(
         throw new ApiError(405, 'method_not_allowed', 'このリクエストは受け付けていません');
       }
 
-      const db = deps.db ?? database();
+      const db = deps.db ?? (await defaultDatabase());
       const clock = deps.clock ?? systemClock;
 
       if (options.rateLimit !== false) {

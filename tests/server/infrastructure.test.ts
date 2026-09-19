@@ -181,6 +181,38 @@ describe('what actually gets stored', () => {
   });
 });
 
+describe('the health check', () => {
+  /**
+   * The game probes this endpoint to decide whether to use the API at all, so it must
+   * not be able to fail for a reason that has nothing to do with being alive. It used
+   * to reach the Postgres driver through the shared route pipeline, which meant a
+   * failure to load `ws` would quietly demote every player to a local-only game.
+   */
+  it('answers even when the database driver cannot be loaded', async () => {
+    vi.resetModules();
+    vi.doMock('../../server/db/neon.js', () => {
+      throw new Error('the driver failed to load');
+    });
+
+    const { healthRoute } = await import('../../server/http/health');
+    const response = await healthRoute()(new Request('https://komato.test/api/health'));
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).status).toBe('ok');
+
+    vi.doUnmock('../../server/db/neon.js');
+    vi.resetModules();
+  });
+
+  it('reports whether the database is configured, without connecting to it', async () => {
+    vi.stubEnv('DATABASE_URL', '');
+    expect((await json(await api.health())).checks).toEqual({ database: 'unconfigured' });
+
+    vi.stubEnv('DATABASE_URL', 'postgresql://example');
+    expect((await json(await api.health())).checks).toEqual({ database: 'configured' });
+  });
+});
+
 describe('the daily board boundary', () => {
   it('rolls over at local midnight, not UTC midnight', () => {
     // 2026-05-01T09:00Z is 18:00 on 1 May in Tokyo, so "today" began at 15:00Z on

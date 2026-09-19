@@ -6,7 +6,6 @@
  * about. Keeping the handlers here means the tests import the real thing, and moving
  * to another host later is a matter of re-pointing the thin files.
  */
-import { RULES } from '../../shared/core/rules.js';
 import { isRunId } from '../domain/run.js';
 import { board, parseLimit, parsePeriod } from '../service/leaderboardService.js';
 import { completeRun, createRun } from '../service/runService.js';
@@ -15,35 +14,14 @@ import { ApiError } from './apiError.js';
 import { createRoute, json, type Handler } from './route.js';
 import type { Clock } from '../support/clock.js';
 import type { Database } from '../db/types.js';
-import type { HealthResponse } from '../../shared/core/api.js';
+
+// Re-exported so the tests and `api/health.ts` reach the same handler, even though it
+// deliberately lives outside this module's dependency graph.
+export { healthRoute } from './health.js';
 
 export interface RouteDeps {
   db?: Database;
   clock?: Clock;
-}
-
-/**
- * Liveness, and the config version the client must agree with.
- *
- * Deliberately exempt from the rate limit: the game polls it to decide whether to run
- * in remote or LOCAL mode, and a throttled health check would strand a player offline.
- */
-export function healthRoute(deps: RouteDeps = {}): Handler {
-  return createRoute(
-    {
-      method: 'GET',
-      rateLimit: false,
-      handle: async ({ clock }) => {
-        const body: HealthResponse = {
-          status: 'ok',
-          configVersion: RULES.configVersion,
-          serverTime: clock.now().toISOString(),
-        };
-        return json(body);
-      },
-    },
-    deps,
-  );
 }
 
 export function createRunRoute(deps: RouteDeps = {}): Handler {

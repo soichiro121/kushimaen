@@ -11,6 +11,15 @@ export interface HealthResponse {
   status: 'ok';
   configVersion: number;
   serverTime: string;
+  /**
+   * Deployment diagnostics. The client ignores these - it only looks at `status` -
+   * but they turn "the game works and the leaderboard is empty" from a mystery into
+   * one line of curl output.
+   */
+  checks?: {
+    /** Whether DATABASE_URL is set. Not whether the database answers. */
+    database: 'configured' | 'unconfigured';
+  };
 }
 
 export interface CreateRunResponse {
